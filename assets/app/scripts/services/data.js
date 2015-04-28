@@ -690,6 +690,7 @@ angular.module('openshiftConsole')
     policies:                  API_CFG.openshift,
     policyBindings:            API_CFG.openshift,
     projects:                  API_CFG.openshift,
+    projectRequests:           API_CFG.openshift,
     roles:                     API_CFG.openshift,
     roleBindings:              API_CFG.openshift,
     routes:                    API_CFG.openshift,
@@ -825,7 +826,7 @@ angular.module('openshiftConsole')
     if (opts.namespace) {
       deferred.resolve({namespace: opts.namespace});
     }
-    else if (context.projectPromise && type !== "projects") {
+    else if (context.projectPromise && type !== "projects" && type !== "projectRequests") {
       context.projectPromise.done(function(project) {
         deferred.resolve({namespace: project.metadata.name});
       });
