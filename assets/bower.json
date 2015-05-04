@@ -37,7 +37,9 @@
     "patternfly": {
       "main": [
         "components/bootstrap/dist/js/bootstrap.js",
-        "components/bootstrap-select/bootstrap-select.js"
+        "components/bootstrap-select/bootstrap-select.js",
+        "components/datatables/media/js/jquery.dataTables.js",
+        "dist/js/patternfly.js"
       ]
     },
     "selectize": {
