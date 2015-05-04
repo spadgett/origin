@@ -1,0 +1,35 @@
+<div ng-controller="ProjectController" class="content">
+  <project-page>
+    <div ng-controller="EventsController">
+      <div class="page-header page-header-bleed-right">
+        <h1>Events</h1>
+      </div>
+      <alerts alerts="alerts"></alerts>
+      <div ng-if="(events | hashSize) === 0">
+        <div>
+          <em>{{emptyMessage}}</em>
+        </div>
+      </div>
+      <table ng-if="(events | hashSize) !== 0" class="table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Object</th>
+            <th>Count</th>
+            <th>Reason</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="margin-bottom: 10px;" ng-repeat="event in events">
+            <td>{{event.lastTimestamp | dateRelative}}</td>
+            <td>{{event.involvedObject.kind}}/{{event.involvedObject.name}}</td>
+            <td>{{event.count}}</td>
+            <td>{{event.reason}}</td>
+            <td>{{event.message}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </project-page>
+</div>

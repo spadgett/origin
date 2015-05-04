@@ -71,6 +71,7 @@ angular
       .href(projectHref("browse"))
       .subPath("Builds", "builds", builder.join(templatePath, 'builds.html'))
       .subPath("Deployments", "deployments", builder.join(templatePath, 'deployments.html'))
+      .subPath("Events", "events", builder.join(templatePath, 'events.html'))
       .subPath("Image Streams", "images", builder.join(templatePath, 'images.html'))
       .subPath("Pods", "pods", builder.join(templatePath, 'pods.html'))
       .subPath("Services", "services", builder.join(templatePath, 'services.html'))
@@ -117,6 +118,9 @@ angular
       .when('/project/:project/browse/deployments', {
         templateUrl: 'views/deployments.html'
       })
+      .when('/project/:project/browse/events', {
+        templateUrl: 'views/events.html'
+      })
       .when('/project/:project/browse/images', {
         templateUrl: 'views/images.html'
       })
@@ -131,10 +135,10 @@ angular
       })
       .when('/project/:project/catalog/images', {
         templateUrl: 'views/catalog/images.html'
-      })      
+      })
       .when('/project/:project/create', {
         templateUrl: 'views/create.html'
-      })      
+      })
       .when('/project/:project/create/fromtemplate', {
         templateUrl: 'views/newfromtemplate.html'
       })
