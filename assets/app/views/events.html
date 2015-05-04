@@ -10,7 +10,8 @@
           <em>{{emptyMessage}}</em>
         </div>
       </div>
-      <table ng-if="(events | hashSize) !== 0" class="table">
+
+      <table ng-if="(events | hashSize) !== 0" class="datatable table table-striped table-bordered">
         <thead>
           <tr>
             <th>Time</th>
@@ -20,8 +21,8 @@
             <th>Message</th>
           </tr>
         </thead>
-        <tbody>
-          <tr style="margin-bottom: 10px;" ng-repeat="event in events">
+        <tbody style="background: #fff">
+          <tr ng-repeat="event in events">
             <td>{{event.lastTimestamp | dateRelative}}</td>
             <td>{{event.involvedObject.kind}}/{{event.involvedObject.name}}</td>
             <td>{{event.count}}</td>
@@ -33,3 +34,10 @@
     </div>
   </project-page>
 </div>
+
+<script>
+  // Initialize Datatables
+  $(document).ready(function() {
+    $('.datatable').dataTable();
+  });
+</script>
