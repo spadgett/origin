@@ -27,7 +27,13 @@ angular.module('openshiftConsole')
       link: function ($scope, element, attrs) {
         var select = $('.selectpicker', element);
 
-        var updateOptions = function(projects) {
+        var updateOptions = function() {
+          // Locally add the "current" project to the projects list if it doesn't exist
+          var projects = $scope.projects || {};
+          if ($scope.project && $scope.projectName && !projects[$scope.projectName]) {
+            projects = angular.extend({$scope.projectName: $scope.project}, projects);
+          }
+
           var sortedProjects = $filter('orderByDisplayName')(projects);
           // Create options from the sorted array.
           angular.forEach(sortedProjects, function(project) {
@@ -42,7 +48,7 @@ angular.module('openshiftConsole')
           // <option>Create new</option>
         };
 
-        updateOptions($scope.projects);
+        updateOptions();
 
         select.selectpicker({
               iconBase: 'fa',
@@ -57,11 +63,14 @@ angular.module('openshiftConsole')
             $location.url(newURL);
           });
         });
-        $scope.$watch("projects", function(projects) {
+
+        var clearAndUpdateOptions = function() {
           select.empty();
-          updateOptions(projects);
+          updateOptions();
           select.selectpicker('refresh');
-        });
+        };
+        $scope.$watch("project", clearAndUpdateOptions);
+        $scope.$watch("projects", clearAndUpdateOptions);
 
         LabelFilter.setupFilterWidget($(".navbar-filter-widget", element), $(".active-filters", element));
         LabelFilter.toggleFilterWidget(!$scope.renderOptions || !$scope.renderOptions.hideFilterWidget);
