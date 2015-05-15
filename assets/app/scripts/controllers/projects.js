@@ -12,7 +12,7 @@ angular.module('openshiftConsole')
     $scope.projects = {};
     $scope.alerts = $scope.alerts || {};
     $scope.emptyMessage = "Loading...";
-    $scope.canCreate = false;
+    $scope.canCreate = undefined;
 
     AuthService.withUser().then(function() {
       DataService.list("projects", $scope, function(projects) {
@@ -27,6 +27,8 @@ angular.module('openshiftConsole')
     .then(function() {
       $scope.canCreate = true;
     }, function(result) {
+      $scope.canCreate = false;
+
       var data = result.data || {};
 
       // 403 Forbidden indicates the user doesn't have authority.
@@ -40,12 +42,15 @@ angular.module('openshiftConsole')
         return;
       }
 
-      // Check if this is a custom message, configured by an administrator.
-      // If it is, show it in the UI instead of our default message. The only
-      // way to test this currently is to compare strings. The test will
-      // break if the message ever changes.
-      if (!/You may not request a new project via this API\.$/.test(data.message)) {
-        $scope.newProjectMessage = data.message;
+      // Check if there are detailed messages. If there are, show them instead of our default message.
+      if (data.details) {
+      	var messages = [];
+      	_.forEach(data.details.causes || [], function(cause) {
+          if (cause.message) { messages.push(cause.message); }
+      	});
+      	if (messages.length > 0) {
+      	  $scope.newProjectMessage = messages.join("\n");
+        }
       }
     });
   });
