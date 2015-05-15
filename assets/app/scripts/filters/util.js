@@ -205,6 +205,9 @@ angular.module('openshiftConsole')
   })
   .filter("toArray", function() {
     return function(items) {
+      if (!items) {
+        return [];
+      }
       if (angular.isArray(items)) {
         return items;
       }
