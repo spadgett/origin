@@ -136,12 +136,6 @@ angular
       .when('/project/:project/browse/services', {
         templateUrl: 'views/services.html'
       })
-      .when('/project/:project/catalog/templates', {
-        templateUrl: 'views/catalog/templates.html'
-      })
-      .when('/project/:project/catalog/images', {
-        templateUrl: 'views/catalog/images.html'
-      })
       .when('/project/:project/create', {
         templateUrl: 'views/create.html'
       })

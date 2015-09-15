@@ -2,78 +2,171 @@
 
 /**
  * @ngdoc function
- * @name openshiftConsole.controller:PodsController
+ * @name openshiftConsole.controller:CreateController
  * @description
- * # ProjectController
+ * # CreateController
  * Controller of the openshiftConsole
  */
 angular.module('openshiftConsole')
-  .controller('CreateController', function ($scope, DataService, tagsFilter, uidFilter, createFromSourceURLFilter, LabelFilter, $location, Logger) {
-    var projectTemplates;
-    var openshiftTemplates;
+  .controller('CreateController', function ($scope, DataService, tagsFilter, uidFilter, hashSizeFilter, imageStreamTagAnnotationFilter, LabelFilter, $location, Logger) {
+    var projectImageStreams,
+        openshiftImageStreams,
+        projectTemplates,
+        openshiftTemplates;
 
-    // Templates with the `instant-apps` tag.
-    $scope.instantApps = undefined;
+    // The tags to use for categories in the order we want to display. Empty string corresponds to the "Other" category.
+    $scope.categoryTags = [
+      "instant-app", "xpaas", "java", "php", "ruby", "perl", "python", "nodejs", "database", "messaging", ""
+    ];
 
-    // All templates from the shared or project namespace that aren't instant apps.
-    // This is displayed in the "Other Templates" section.
-    $scope.otherTemplates = undefined;
+    $scope.categoryLabels = {
+      "instant-app": "Instant Apps",
+      java: "Java",
+      xpaas: "xPaaS",
+      php: "PHP",
+      ruby: "Ruby",
+      perl: "Perl",
+      python: "Python",
+      nodejs: "NodeJS",
+      database: "Databases",
+      messaging: "Messaging",
+      "": "Other"
+    };
 
-    // Set to true when shared templates and project templates have finished loading.
-    $scope.templatesLoaded = false;
+    $scope.templatesByCategory = {};
+    $scope.builderImagesByCategory = {};
+    $scope.nonBuilderImages = [];
 
-    $scope.sourceURLPattern = /^((ftp|http|https|git):\/\/(\w+:{0,1}[^\s@]*@)|git@)?([^\s@]+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
+    // Set to true when everything has finished loading.
+    $scope.loaded = false;
 
+    // Set to false if there is data to show.
+    $scope.emptyCatalog = true;
+
+    $scope.filterByTag = function(tag) {
+      $scope.searchTerm = tag;
+    };
+
+    // List templates in the project namespace as well as the shared
+    // `openshift` namespace.
     DataService.list("templates", $scope, function(templates) {
       projectTemplates = templates.by("metadata.name");
-      updateTemplates();
-      Logger.info("project templates", projectTemplates);
+      angular.forEach(projectTemplates, categorizeTemplate);
+      updateState();
     });
 
     DataService.list("templates", {namespace: "openshift"}, function(templates) {
       openshiftTemplates = templates.by("metadata.name");
-      updateTemplates();
-      Logger.info("openshift templates", openshiftTemplates);
+      angular.forEach(openshiftTemplates, categorizeTemplate);
+      updateState();
     });
 
-    function isInstantApp(template) {
-      var i, tags = tagsFilter(template);
-      for (i = 0; i < tags.length; i++) {
-        if (tags[i] === "instant-app") {
-          return true;
+    // List image streams in the project namespace as well as the shared
+    // `openshift` namespace.
+    DataService.list("imagestreams", $scope, function(imageStreams) {
+      projectImageStreams = imageStreams.by("metadata.name");
+      imagesForStreams(projectImageStreams);
+      updateState();
+    });
+
+    DataService.list("imagestreams", {namespace: "openshift"}, function(imageStreams) {
+      openshiftImageStreams = imageStreams.by("metadata.name");
+      imagesForStreams(openshiftImageStreams);
+      updateState();
+    });
+
+    function addImageToCategory(image, category) {
+      if (!$scope.builderImagesByCategory[category]) {
+        $scope.builderImagesByCategory[category] = [];
+      }
+
+      $scope.builderImagesByCategory[category].push(image);
+    }
+
+    function imagesForStreams(imageStreams) {
+      angular.forEach(imageStreams, function(imageStream) {
+        if (!imageStream.status) {
+          return;
+        }
+
+        // Create a map of spec tags so we can find them efficiently later when
+        // looking at status tags.
+        var specTags = {};
+        if (imageStream.spec && imageStream.spec.tags) {
+          angular.forEach(imageStream.spec.tags, function(tag) {
+            if (tag.annotations && tag.annotations.tags) {
+              specTags[tag.name] = tag.annotations.tags.split(/\s*,\s*/);
+            }
+          });
+        }
+
+        // Loop over status tags to categorize the images.
+        angular.forEach(imageStream.status.tags, function(tag) {
+          var imageStreamTag = tag.tag;
+          var image = {
+            imageStream: imageStream,
+            imageStreamTag: imageStreamTag,
+            name: imageStream.metadata.name + ":" + imageStreamTag,
+            version: imageStreamTagAnnotationFilter(imageStream, 'version', imageStreamTag)
+          };
+          var category, categoryTags = specTags[imageStreamTag] || [];
+          if (categoryTags.indexOf("builder") >= 0) {
+            // Add the builder image to its category.
+            category = getCategory(categoryTags);
+            addImageToCategory(image, category);
+          } else {
+            // Group non-builder images separately so we can hide them by default.
+            $scope.nonBuilderImages.push(image);
+          }
+        });
+      });
+    }
+
+    function getCategory(tags) {
+      var i, j;
+
+      // Find the first category that is in tags.
+      for (i = 0; i < $scope.categoryTags.length; i++) {
+        for (j = 0; j < tags.length; j++) {
+          if (tags[j].toLowerCase() === $scope.categoryTags[i]) {
+            return tags[j];
+          }
         }
       }
 
-      return false;
+      return "";
     }
 
-    function updateTemplates() {
-      // Check if we've loaded templates from both the openshift and project namespaces.
-      $scope.templatesLoaded = openshiftTemplates && projectTemplates;
-      $scope.instantApps = {};
-      $scope.otherTemplates = {};
-
-      // Categorize templates as instant apps or "other."
-      var categorizeTemplates = function(template) {
-        var uid = uidFilter(template);
-        if (isInstantApp(template)) {
-          $scope.instantApps[uid] = template;
-        } else {
-          $scope.otherTemplates[uid] = template;
-        }
-      };
-
-      angular.forEach(projectTemplates, categorizeTemplates);
-      angular.forEach(openshiftTemplates, categorizeTemplates);
-
-      Logger.info("instantApps", $scope.instantApps);
-      Logger.info("otherTemplates", $scope.otherTemplates);
-    }
-
-    $scope.createFromSource = function() {
-      if($scope.from_source_form.$valid) {
-        var createFromSourceURL = createFromSourceURLFilter($scope.projectName, $scope.from_source_url);
-        $location.url(createFromSourceURL);
+    function categorizeTemplate(template) {
+      var tags = tagsFilter(template);
+      var category = getCategory(tags);
+      if (!$scope.templatesByCategory[category]) {
+        $scope.templatesByCategory[category] = [];
       }
-    };
+
+      $scope.templatesByCategory[category].push(template);
+    }
+
+    function updateState() {
+      // Have we finished loading all of the templates and image streams in
+      // both the project and openshift namespaces? If undefined, they're no
+      // loaded.
+      $scope.loaded =
+        projectTemplates &&
+        openshiftTemplates &&
+        projectImageStreams &&
+        openshiftImageStreams;
+
+      if ($scope.loaded) {
+        Logger.info("templates by category", $scope.templatesByCategory);
+        Logger.info("builder images", $scope.builderImagesByCategory);
+        Logger.info("non-builder images", $scope.nonBuilderImages);
+      }
+
+      // Does anything we've loaded so far have data we show by default?
+      $scope.emptyCatalog =
+        hashSizeFilter(projectTemplates) === 0 &&
+        hashSizeFilter(openshiftTemplates) === 0 &&
+        $scope.builderImagesByCategory.length === 0;
+    }
   });

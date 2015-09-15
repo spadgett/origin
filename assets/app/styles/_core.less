@@ -204,6 +204,7 @@ html, body {
   margin: 10px auto;
   max-width: 500px;
   padding: 30px;
+
   // Make sure icons are the same size so text aligns.
   .fa {
     width: 16px;
@@ -215,8 +216,7 @@ html, body {
   }
 }
 
-.empty-project-list {
-  .text-center;
+.empty-state-message {
   margin: @grid-gutter-width auto;
   max-width: 600px;
   padding: 0 (@grid-gutter-width / 2);
@@ -232,15 +232,34 @@ html, body {
 // Create App
 // --------------------------------------------------
 
- label.checkbox {
+@max-catalog-tile-width: 325px;
+
+label.checkbox {
   font-weight: normal;
 }
 
 // Make sure icons are the same size so headings align.
-.add-to-project h1 .fa {
-  width: 24px;
-  text-align: center;
+.add-to-project {
+  .filter-group {
+    line-height: 1.75;
+    .search-input {
+      .form-control;
+      display: inline-block;
+      margin-bottom: 10px;
+      width: 100%;
+      vertical-align: top;
+      @media (min-width: @screen-sm-min) {
+        // Use the same width as tiles so everything lines up nicely.
+        width: @max-catalog-tile-width;
+      }
+    }
+    .dropdown {
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
 }
+
 
 .create-from-template,
 .create-from-image {
@@ -325,13 +344,15 @@ html, body {
     .justify-content(@justify: flex-start);
     .tile-template, .tile-image {
       .flex(@columns: 1 0 auto);
-      min-width: 150px;
-      max-width: 325px;
+      width: 100%;
+      max-width: @max-catalog-tile-width;
       margin-right: (@grid-gutter-width / 2);
     }
   }
 }
 
+// Small enough to allow two side-by-side text fields.
+@create-form-md-width: 44%;
 @media (min-width: 767px) {
   .create-from-template,
   .create-from-image {
@@ -342,10 +363,13 @@ html, body {
         text-align: right;
       }
     }
-    .form-group {
+    .form-control-md {
+      width: @create-form-md-width;
+    }
+    .labels .form-group {
       // Show name/value fields like labels and env vars side by side at wide screen sizes.
       // Align text fields with read-only values.
-      width: 44%;
+      width: @create-form-md-width;
       .form-control {
         width: 100%;
       }

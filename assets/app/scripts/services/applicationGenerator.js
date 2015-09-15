@@ -205,16 +205,7 @@ angular.module("openshiftConsole")
         });
       }
 
-      // User can input a URL that contains a ref
-      var uri = new URI(input.buildConfig.sourceUrl);
-      var sourceRef = uri.fragment();
-      if (!sourceRef || sourceRef.length === 0) {
-        sourceRef = "master";
-      }
-      uri.fragment("");
-      var sourceUrl = uri.href();
-
-      return {
+      var bc = {
         apiVersion: oApiVersion,
         kind: "BuildConfig",
         metadata: {
@@ -231,10 +222,10 @@ angular.module("openshiftConsole")
           },
           source: {
             git: {
-              ref: sourceRef,
-              uri: sourceUrl
+              ref: input.buildConfig.gitRef || 'master',
+              uri: input.buildConfig.sourceUrl
             },
-            type: "Git"
+            type: "Git",
           },
           strategy: {
             type: "Source",
@@ -249,6 +240,13 @@ angular.module("openshiftConsole")
           triggers: triggers
         }
       };
+
+      // Add contextDir only if specified.
+      if (input.buildConfig.contextDir) {
+        bc.spec.source.contextDir = input.buildConfig.contextDir;
+      }
+
+      return bc;
     };
 
     scope._generateImageStream = function(input){

@@ -22,11 +22,10 @@ angular.module('openshiftConsole')
       replace: true,
       scope: {
         image: '=',
-        imageRepo: '=',
+        imageStream: '=',
         imageTag: '=',
         version: '=',
-        project: '=',
-        sourceUrl: '='
+        project: '='
       },
       templateUrl: 'views/catalog/_image.html'
     };
