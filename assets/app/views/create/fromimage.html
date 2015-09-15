@@ -15,14 +15,13 @@
             <div class="col-md-8">
               <osc-image-summary resource="image" name="imageName"></osc-image-summary>
               <div class="clearfix visible-xs-block"></div>
-              <form class="" ng-show="imageStream" novalidate name="form">
+              <form class="" ng-show="imageRepo" novalidate name="form">
                 <div class="gutter-bottom">
                   <div class="form-group form-group-lg" ng-class="{'has-error': (form.appname.$invalid || nameTaken)}">
                    <label for="appname" class="required">Name</label>
                    <input type="text"
                           required
                           autofocus
-                          select-on-focus
                           minlength="2"
                           maxlength="24"
                           pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
@@ -65,7 +64,7 @@
 
                 <div class="form-group">
                   <label for="sourceUrl" class="required">Git Repository URL</label>
-                  <div ng-class="{'has-warning': form.sourceUrl.$dirty && !sourceURLPattern.test(buildConfig.sourceUrl)}">
+                  <div ng-class="{'has-warning': from_source_form.from_source_url.$dirty && !sourceURLPattern.test(from_source_url)}">
                      <input class="form-control"
                        id="sourceUrl"
                        name="sourceUrl"
@@ -80,7 +79,7 @@
                       style="margin-left: 3px;">Try it<i class="fa fa-level-up" style="margin-left: 3px; font-size: 17px;"></i></a>
                   </div>
                   <div>
-                    <span class="text-warning" ng-if="form.sourceUrl.$dirty && !sourceURLPattern.test(buildConfig.sourceUrl)">Git repository should be a URL.</span>
+                    <span class="text-warning" ng-if="from_source_form.from_source_url.$dirty && !sourceURLPattern.test(from_source_url)">Source repository should be a URL</span>
                   </div>
                 </div>
                 <div class="form-group">
@@ -272,7 +271,7 @@
                   <a class="btn btn-default btn-lg" href="{{projectName | projectOverviewURL}}">Cancel</a>
                 </div>
               </form>
-              <div ng-hide="imageStream">
+              <div ng-hide="imageRepo">
                 {{ emptyMessage }}
               </div>
             </div>

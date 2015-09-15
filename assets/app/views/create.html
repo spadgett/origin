@@ -19,93 +19,63 @@
             </p>
 
             <p>
-              To load an image stream or template from a file, run the command
+              To load an image stream or template from a file, run the command,
               <div><code>oc create -f &lt;filename&gt; -n {{projectName}}</code></div>
             </p>
 
-            <p><a href="{{projectName | projectOverviewURL}}">Back to overview</a></p>
+            <p><a href="{{projectName | projectOverviewURL}}">Back to {{(project | displayName) || projectName}}</a></p>
           </div>
 
           <!-- Show an abbreviated message if only non-builders exist in the project.
                We show a link to view the non-builder images below. -->
           <p ng-if="emptyCatalog && loaded && nonBuilderImages.length">No builder images or templates.</p>
 
-          <div ng-show="!emptyCatalog">
+          <div ng-if="!emptyCatalog">
             <h1>Select Image or Template</h1>
 
-            <p>Choose from web frameworks, databases, and other components.
-              You'll be prompted for additional information on the next
-              page.</p>
-
-            <div class="filter-group">
-              <!-- Add a hidden label for screen readers. -->
-              <label for="search" class="sr-only">Filter by keyword</label>
-              <input
-                 ng-model="searchTerm"
-                 autofocus
-                 type="search"
-                 id="search"
-                 placeholder="Filter by keyword"
-                 class="search-input form-control">
-
-              <!-- Filter by tag -->
-              <div dropdown keyboard-nav class="btn-group">
-                <button class="dropdown-toggle" data-toggle="dropdown" role="menu">
-                  Browse by tag
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="tag in categoryTags" role="menuitem">
-                    <a href="" ng-click="filterByTag(tag)">{{tag}}</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div ng-if="(templatesByCategory | toArray | filter: searchTerm).length === 0 && (builderImagesByCategory | toArray | filter: searchTerm).length === 0">
-              All items hidden by filter.
-            </div>
-
-            <div ng-repeat="tag in categoryTags" ng-if="(templatesByCategory[tag] | toArray | filter: searchTerm).length || (builderImagesByCategory[tag] | toArray | filter: searchTerm).length">
+            <p>Choose from instant apps, web frameworks, databases, and other
+              components. You'll be prompted for additional information on the
+              next page.</p>
+            <div ng-repeat="tag in categoryTags" ng-if="templatesByCategory[tag] || builderImagesByCategory[tag]">
               <h3>{{categoryLabels[tag] || tag}}</h3>
               <div class="catalog">
                 <!-- Show builder images first. -->
                 <catalog-image
-                  image-stream="builder.imageStream"
-                  image-tag="builder.imageStreamTag"
+                  image-repo="builder.imageRepo"
+                  image-tag="builder.imageRepoTag"
                   project="projectName"
                   version="builder.version"
-                  ng-repeat="builder in builderImagesByCategory[tag] | toArray | filter: searchTerm | orderBy : ['name', 'imageStream.metadata.namespace']">
+                  ng-repeat="builder in builderImagesByCategory[tag] | toArray | orderBy : ['name', 'imageRepo.metadata.namespace']">
                 </catalog-image>
 
                 <!-- Show any templates. -->
                 <catalog-template
                   template="template"
                   project="projectName"
-                  ng-repeat="template in templatesByCategory[tag] | toArray | filter: searchTerm | orderBy : ['metadata.name', 'metadata.namespace']">
+                  ng-repeat="template in templatesByCategory[tag] | toArray | orderBy : ['metadata.name', 'metadata.namespace']">
                 </catalog-template>
               </div>
             </div>
+          </div>
 
-            <!-- Don't show images without the builder tag by default, by allow the user to pick one. -->
-            <div ng-if="(nonBuilderImages | filter: searchTerm).length" click-to-reveal link-text="Don't see the image you are looking for?" class="gutter-bottom">
-              <h2>Additional Images</h2>
-              <div class="gutter-bottom">
-                <span class="small pficon-layered">
-                  <span class="pficon pficon-warning-triangle"></span>
-                  <span class="pficon pficon-warning-exclamation"></span>
-                </span>
-                Some images in this list may not be able to build source. Use with caution.
-              </div>
-              <div class="catalog">
-                <catalog-image
-                    image-stream="image.imageStream"
-                    image-tag="image.imageStreamTag"
-                    project="projectName"
-                    version="image.version"
-                    ng-repeat="image in nonBuilderImages | filter: searchTerm | orderBy : ['name', 'imageStream.metadata.namespace']">
-                </catalog-image>
-              </div>
+          <!-- Don't show images without the builder tag by default, by allow the user to pick one. -->
+          <div ng-if="nonBuilderImages.length" click-to-reveal link-text="Don't see the image you are looking for?" class="gutter-bottom">
+            <h2>Additional Images</h2>
+            <div class="gutter-bottom">
+              <span class="small pficon-layered">
+                <span class="pficon pficon-warning-triangle"></span>
+                <span class="pficon pficon-warning-exclamation"></span>
+              </span>
+              Some images in this list may not be able to build source. Use with caution.
+            </div>
+            <div class="catalog">
+              <catalog-image
+                  image-repo="image.imageRepo"
+                  image-tag="image.imageRepoTag"
+                  project="projectName"
+                  version="image.version"
+                  ng-repeat="image in nonBuilderImages | orderBy : ['name', 'imageRepo.metadata.namespace']">
+              </catalog-image>
             </div>
           </div>
         </div>

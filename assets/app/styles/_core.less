@@ -232,34 +232,15 @@ html, body {
 // Create App
 // --------------------------------------------------
 
-@max-catalog-tile-width: 325px;
-
-label.checkbox {
+ label.checkbox {
   font-weight: normal;
 }
 
 // Make sure icons are the same size so headings align.
-.add-to-project {
-  .filter-group {
-    line-height: 1.75;
-    .search-input {
-      .form-control;
-      display: inline-block;
-      margin-bottom: 10px;
-      width: 100%;
-      vertical-align: top;
-      @media (min-width: @screen-sm-min) {
-        // Use the same width as tiles so everything lines up nicely.
-        width: @max-catalog-tile-width;
-      }
-    }
-    .dropdown {
-      display: inline-block;
-      vertical-align: top;
-    }
-  }
+.add-to-project h1 .fa {
+  width: 24px;
+  text-align: center;
 }
-
 
 .create-from-template,
 .create-from-image {
@@ -331,6 +312,18 @@ label.checkbox {
   margin-right: 10px;
 }
 
+.catalog-col section {
+  margin-bottom: 10px;
+  > h3 {
+    margin-top: 0;
+  }
+}
+@media (min-width:@screen-sm-min) {
+  .catalog-col-2 {
+    margin-left: 3%;
+  }
+}
+
 .catalog {
   .flex-display(@display: flex);
 
@@ -344,14 +337,13 @@ label.checkbox {
     .justify-content(@justify: flex-start);
     .tile-template, .tile-image {
       .flex(@columns: 1 0 auto);
-      width: 100%;
-      max-width: @max-catalog-tile-width;
+      min-width: 175px;
+      max-width: 325px;
       margin-right: (@grid-gutter-width / 2);
     }
   }
 }
 
-// Small enough to allow two side-by-side text fields.
 @create-form-md-width: 44%;
 @media (min-width: 767px) {
   .create-from-template,
