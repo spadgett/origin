@@ -559,6 +559,14 @@ angular.module('openshiftConsole')
       return details.id;
     };
   })
+  .filter('isCompletePod', function() {
+    return function(pod) {
+      var phase = _.get(pod, 'status.phase');
+      return phase === 'Succeeded' ||
+             phase === 'Terminated' ||
+             phase === 'Failed';
+    };
+  })
   .filter('isIncompleteBuild', function(ageLessThanFilter) {
     return function(build) {
       if (!build || !build.status || !build.status.phase) {

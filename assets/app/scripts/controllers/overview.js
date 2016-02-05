@@ -237,13 +237,11 @@ angular.module('openshiftConsole')
           return scalableDeploymentByConfig[deploymentConfigId] === deployment;
         };
 
+        var isComplete = $filter('isCompletePod');
         // Filter out monopods we know we don't want to see
         function showMonopod(pod) {
-          // Hide pods in the Succeeded, Terminated, and Failed phases since these
-          // are run once pods that are done.
-          if (pod.status.phase === 'Succeeded' ||
-              pod.status.phase === 'Terminated' ||
-              pod.status.phase === 'Failed') {
+          // Hide run once pods that are done.
+          if (isComplete(pod)) {
             // TODO we may want to show pods for X amount of time after they have completed
             return false;
           }
