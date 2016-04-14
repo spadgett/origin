@@ -1,4 +1,5 @@
-@pf-less-path: "../../bower_components/patternfly/less";
+@bower-path: "../../bower_components";
+@pf-less-path: "@{bower-path}/patternfly/less";
 
 /* PatternFly */
 
@@ -28,6 +29,9 @@
 
 // /* C3 charts */
 @import (less) "@{pf-less-path}/lib/c3/c3.css";
+
+// /* angular-wizard */
+@import "@{bower-path}/angular-wizard/dist/angular-wizard.less";
 
 // /* PatternFly overrides and new stuff */
 @import "@{pf-less-path}/variables.less";
@@ -107,3 +111,4 @@
 @import "_log.less";
 @import "_settings.less";
 @import "_utils.less";
+@import "_wizard.less";

@@ -54,7 +54,15 @@
                         show-name-input="true"
                         name-read-only="kind === 'HorizontalPodAutoscaler'">
                     </osc-autoscaling>
-                    <label-editor labels="autoscaling.labels" expand="true" can-toggle="false"></label-editor>
+                    <osc-form-section
+                      header="Labels"
+                      about-title="labels"
+                      about="Labels are used to organize, group, or select objects and resources, such as pods."
+                      expand="expand"
+                      can-toggle="canToggle"
+                      >
+                      <label-editor labels="autoscaling.labels" expand="true" can-toggle="false"></label-editor>
+                    </osc-form-section>
                     <div class="buttons gutter-top">
                       <button
                           type="submit"

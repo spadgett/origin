@@ -1,0 +1,44 @@
+.ng-invalid .steps-indicator li:not(.editing) a {
+  cursor: not-allowed;
+}
+.wizard {
+  padding-bottom: 60px;
+  .steps-indicator {
+    @media (min-width:@screen-sm-min) {
+      margin-bottom: 50px;
+    }
+    li {
+      padding-top: 15px;
+      a {
+        text-transform: none;
+        font-weight: 500;
+      }
+    }
+  }
+  .step {
+    padding-right: 10px;
+    // height: 400px;
+    // overflow-y: auto;
+  }
+  .review-step {
+    h3 {
+      font-size: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #d1d1d1;
+      .edit-action {
+        .pull-right();
+        .small();
+        margin-top: 5px;
+      }
+    }
+    dt {
+      font-weight: normal;
+      color: #393f44;
+    }
+  }
+}
+
+.wizard-buttons {
+  .pad-top-lg();
+  clear: both;
+}
