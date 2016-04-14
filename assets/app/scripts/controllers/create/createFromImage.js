@@ -14,6 +14,7 @@ angular.module("openshiftConsole")
       MetricsService,
       HPAService,
       TaskList,
+      WizardHandler,
       failureObjectNameFilter,
       $filter,
       $parse,
@@ -39,6 +40,16 @@ angular.module("openshiftConsole")
         title: imageName
       }
     ];
+
+    $scope.nextEnabled = function() {
+      var wizard = WizardHandler.wizard();
+      // TODO: Check if the form is valid?
+      return wizard.currentStepNumber() !== wizard.totalStepCount();
+    };
+
+    $scope.previousEnabled = function() {
+      return WizardHandler.wizard().currentStepNumber() !== 1;
+    };
 
     ProjectsService
       .get($routeParams.project)
