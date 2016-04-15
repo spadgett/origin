@@ -41,14 +41,24 @@ angular.module("openshiftConsole")
       }
     ];
 
-    $scope.nextEnabled = function() {
+    $scope.onLastStep = function() {
       var wizard = WizardHandler.wizard();
-      // TODO: Check if the form is valid?
-      return wizard.currentStepNumber() !== wizard.totalStepCount();
+      return wizard.currentStepNumber() === wizard.totalStepCount();
     };
 
     $scope.previousEnabled = function() {
       return WizardHandler.wizard().currentStepNumber() !== 1;
+    };
+
+    $scope.goToStep = function(name) {
+      WizardHandler.wizard().goTo(name);
+    };
+
+    $scope.validate = function() {
+      return $scope.form.$valid &&
+             !$scope.nameTaken &&
+             _.isEmpty($scope.cpuProblems) &&
+             _.isEmpty($scope.memoryProblems);
     };
 
     ProjectsService
@@ -108,6 +118,12 @@ angular.module("openshiftConsole")
           scope.cpuRequestCalculated = LimitRangesService.isRequestCalculated('cpu', project);
           scope.cpuLimitCalculated = LimitRangesService.isLimitCalculated('cpu', project);
           scope.memoryRequestCalculated = LimitRangesService.isRequestCalculated('memory', project);
+          scope.hasLimits = function() {
+            return _.get($scope, 'container.resources.requests.cpu') ||
+                   _.get($scope, 'container.resources.limits.cpu') ||
+                   _.get($scope, 'container.resources.requests.memory') ||
+                   _.get($scope, 'container.resources.limits.memory');
+          };
 
           scope.fillSampleRepo = function() {
             var annotations;

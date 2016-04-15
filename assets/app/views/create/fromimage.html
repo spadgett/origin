@@ -19,11 +19,11 @@
                     </div>
                     <div class="col-md-8">
                       <fieldset ng-disabled="disableInputs">
-                        <osc-image-summary resource="image" name="imageName"></osc-image-summary>
-                        <div class="clearfix visible-xs-block"></div>
                         <form class="" ng-show="imageStream" novalidate name="form" ng-submit="createApp()">
                         <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html">
-                          <wz-step wz-title="Source">
+                          <wz-step wz-title="Source" canexit="validate">
+                            <osc-image-summary resource="image" name="imageName"></osc-image-summary>
+                            <div class="clearfix visible-xs-block"></div>
                             <div class="form-group">
                              <label for="appname" class="required">Name</label>
                              <!--
@@ -132,68 +132,68 @@
                             </div>
                           </wz-step>
 
-                          <wz-step wz-title="Build">
-                              <h2>Build</h2>
+                          <wz-step wz-title="Build" canexit="validate">
+                            <h2>Build Configuration</h2>
 
-                              <div class="help-block">
-                                Build configurations describe how to build your deployable image.
-                                This includes your source, the base builder image, and when to
-                                launch new builds.
-                              </div>
+                            <div class="help-block">
+                              Build configurations describe how to build your deployable image.
+                              This includes your source, the base builder image, and when to
+                              launch new builds.
+                            </div>
 
-                              <h3>Triggers</h3>
-                              <div class="checkbox">
-                                <label>
-                                  <input type="checkbox" ng-model="buildConfig.buildOnSourceChange"/>
-                                  Configure a webhook build trigger
-                                  <span class="help action-inline">
-                                    <a href data-toggle="tooltip"
-                                       data-original-title="The source repository must be configured to use the webhook to trigger a build when source is committed.">
-                                      <i class="pficon pficon-help"></i>
-                                    </a>
-                                  </span>
-                                </label>
-                              </div>
-                              <div class="checkbox">
-                                <label>
-                                  <input type="checkbox" ng-model="buildConfig.buildOnImageChange"/>
-                                  Automatically build a new image when the builder image changes
-                                  <span class="help action-inline">
-                                    <a href data-toggle="tooltip" data-original-title="Automatically building a new image when the builder image changes allows your code to always run on the latest updates.">
+                            <h3>Triggers</h3>
+                            <div class="checkbox">
+                              <label>
+                                <input type="checkbox" ng-model="buildConfig.buildOnSourceChange"/>
+                                Configure a webhook build trigger
+                                <span class="help action-inline">
+                                  <a href data-toggle="tooltip"
+                                     data-original-title="The source repository must be configured to use the webhook to trigger a build when source is committed.">
                                     <i class="pficon pficon-help"></i>
-                                    </a>
-                                  </span>
-                                </label>
-                              </div>
-                              <div class="checkbox">
-                                <label>
-                                  <input type="checkbox" ng-model="buildConfig.buildOnConfigChange"/>
-                                  Automatically build a new image when the build configuration changes
-                                </label>
-                              </div>
-                              <h3>Environment Variables (Build and Runtime) <span class="help action-inline">
-                                <a href data-toggle="tooltip"
-                                   data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will be available during your build and at runtime.">
+                                  </a>
+                                </span>
+                              </label>
+                            </div>
+                            <div class="checkbox">
+                              <label>
+                                <input type="checkbox" ng-model="buildConfig.buildOnImageChange"/>
+                                Automatically build a new image when the builder image changes
+                                <span class="help action-inline">
+                                  <a href data-toggle="tooltip" data-original-title="Automatically building a new image when the builder image changes allows your code to always run on the latest updates.">
                                   <i class="pficon pficon-help"></i>
-                                </a>
-                              </span></h3>
-                              <osc-key-values
-                                entries="buildConfig.envVars"
-                                delimiter="="
-                                key-validator="env"
-                                delete-policy="added"
-                                key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
+                                  </a>
+                                </span>
+                              </label>
+                            </div>
+                            <div class="checkbox">
+                              <label>
+                                <input type="checkbox" ng-model="buildConfig.buildOnConfigChange"/>
+                                Automatically build a new image when the build configuration changes
+                              </label>
+                            </div>
+                            <h3>Environment Variables (Build and Runtime) <span class="help action-inline">
+                              <a href data-toggle="tooltip"
+                                 data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will be available during your build and at runtime.">
+                                <i class="pficon pficon-help"></i>
+                              </a>
+                            </span></h3>
+                            <osc-key-values
+                              entries="buildConfig.envVars"
+                              delimiter="="
+                              key-validator="env"
+                              delete-policy="added"
+                              key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
                           </wz-step>
 
                           <!-- /build config -->
 
-                          <wz-step wz-title="Deployment">
-                            <h2>Deployment</h2>
-
+                          <wz-step wz-title="Deployment" canexit="validate">
+                            <h2>Deployment Configuration</h2>
                             <div class="help-block">
                               Deployment configurations describe how your application is
                               configured by the cluster and what conditions trigger a deployment.
                             </div>
+
                             <h3>Autodeploy when</h3>
                             <div class="checkbox">
                               <label>
@@ -207,53 +207,12 @@
                               Deployment configuration changes
                             </label>
                             </div>
-                            <div>
-                              <h3>Environment Variables (Runtime only) <span class="help action-inline">
-                                <a href data-toggle="tooltip"
-                                   data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will only be available at runtime.">
-                                  <i class="pficon pficon-help"></i>
-                                </a>
-                              </span></h3>
-                              <osc-key-values
-                                entries="deploymentConfig.envVars"
-                                delimiter="="
-                                key-validator="env"
-                                delete-policy="added"
-                                key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
-                            </div>
-                          </wz-step>
-
-                          <!-- /deployment config -->
-
-                          <!-- Only show routing options if the image has exposed ports. -->
-                          <wz-step wz-title="Routing" wz-disabled="!routing.portOptions.length">
-                            <h2>Routing</h2>
-                            <div class="help-block">
-                              Routing is a way to make your application publicly visible. Otherwise
-                              you may only be able to access your application by its IP address, if
-                              allowed by the system administrator.
-                            </div>
-                            <div class="form-group checkbox">
-                              <label>
-                                <input type="checkbox" ng-model="routing.include">
-                                Create a route to the application
-                              </label>
-                            </div>
-                            <osc-routing
-                              model="routing"
-                              routing-disabled="!routing.include">
-                            </osc-routing>
-                          </wz-step>
-
-                          <!-- /routing -->
-
-                          <wz-step wz-title="Scaling">
-                            <h2>Scaling</h2>
+                            <h3>Scaling</h3>
                             <div class="help-block">
                               Scaling defines the number of running instances of your built image.
                             </div>
                             <div class="form-group">
-                              <label for="scale-type">Strategy</label>
+                              <label for="scale-type">Scaling Strategy</label>
                               <select ng-model="scaling.autoscale"
                                       ng-options="option.value as option.label for option in scaling.autoscaleOptions"
                                       id="scale-type"
@@ -309,12 +268,46 @@
                                 </span>
                               </span>
                             </div>
+                            <h3>Environment Variables (Runtime only) <span class="help action-inline">
+                              <a href data-toggle="tooltip"
+                                 data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will only be available at runtime.">
+                                <i class="pficon pficon-help"></i>
+                              </a>
+                            </span></h3>
+                            <osc-key-values
+                              entries="deploymentConfig.envVars"
+                              delimiter="="
+                              key-validator="env"
+                              delete-policy="added"
+                              key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
                           </wz-step>
 
-                          <!-- /scaling -->
+                          <!-- /deployment config -->
 
-                          <wz-step wz-title="Limits">
-                            <h2>Limits</h2>
+                          <!-- Only show routing options if the image has exposed ports. -->
+                          <wz-step wz-title="Routing" wz-disabled="!routing.portOptions.length">
+                            <h2>Routing</h2>
+                            <div class="help-block">
+                              Routing is a way to make your application publicly visible. Otherwise
+                              you may only be able to access your application by its IP address, if
+                              allowed by the system administrator.
+                            </div>
+                            <div class="form-group checkbox">
+                              <label>
+                                <input type="checkbox" ng-model="routing.include">
+                                Create a route to the application
+                              </label>
+                            </div>
+                            <osc-routing
+                              model="routing"
+                              routing-disabled="!routing.include">
+                            </osc-routing>
+                          </wz-step>
+
+                          <!-- /routing -->
+
+                          <wz-step wz-title="Limits" canexit="validate">
+                            <h2>Resource Limits</h2>
                             <div class="help-block">
                               Resource limits control compute resource usage by a container on a node.
                             </div>
@@ -341,7 +334,7 @@
 
                           <!-- /limits -->
 
-                          <wz-step wz-title="Labels">
+                          <wz-step wz-title="Labels" canexit="validate">
                             <h2>Labels</h2>
                             <div class="help-block mar-bottom-lg">
                               Labels are used to organize, group, or select objects and resources,
@@ -354,24 +347,148 @@
                                 help-text="Each label is applied to each created resource.">
                             </label-editor>
                           </wz-step>
-                          <div class="buttons gutter-top-bottom gutter-top-bottom-2x" style="clear: both;">
-                            <div class="pull-right">
+
+                          <wz-step wz-title="Review" class="review-step">
+                            <h2>Review and Create</h2>
+                            <div class="help-block mar-bottom-lg">
+                              Review the options you've selected and click create when ready.
+                            </div>
+
+                            <h3>
+                              Source
+                              <div class="edit-action"><a href="" ng-click="goToStep('Source')">Edit</a></div>
+                            </h3>
+                            <dl class="dl-horizontal left">
+                              <dt>Name:<dt>
+                              <!-- FIXME!! -->
+                              <dd>{{form.appname.$modelValue}}</dd>
+                              <dt>Git Repository URL:<dt>
+                              <dd>{{buildConfig.sourceUrl}}</dd>
+                              <dt ng-if-start="buildConfig.gitRef">Git Reference:</dt>
+                              <dd ng-if-end>{{buildConfig.gitRef}}</dd>
+                              <dt ng-if-start="buildConfig.contextDir">Context Dir:</dt>
+                              <dd ng-if-end>{{buildConfig.contextDir}}</dd>
+                            </dl>
+
+                            <h3>
+                              Build Configuration
+                              <div class="edit-action"><a href="" ng-click="goToStep('Build')">Edit</a></div>
+                            </h3>
+                            <dl class="dl-horizontal left">
+                              <dt>Webhook Trigger:<dt>
+                              <dd>{{buildConfig.buildOnSourceChange | yesNo}}</dd>
+                              <dt>Image Change Trigger:<dt>
+                              <dd>{{buildConfig.buildOnImageChange | yesNo}}</dd>
+                              <dt>Config Change Trigger:<dt>
+                              <dd>{{buildConfig.buildOnConfigChange | yesNo}}</dd>
+                              <!-- Env vars -->
+                            </dl>
+
+                            <h3>
+                              Deployment Configuration
+                              <div class="edit-action"><a href="" ng-click="goToStep('Deployment')">Edit</a></div>
+                            </h3>
+                            <dl class="dl-horizontal left">
+                              <dt>Image Trigger:<dt>
+                              <dd>{{deploymentConfig.deployOnNewImage | yesNo}}</dd>
+                              <dt>Config Change Trigger:<dt>
+                              <dd>{{deploymentConfig.deployOnConfigChange | yesNo}}</dd>
+
+                              <dt ng-if-start="!scaling.autoscale">Replicas:</dt>
+                              <dd ng-if-end>{{scaling.replicas}}</dd>
+
+                              <dt ng-if-start="scaling.autoscale">Min Pods:</dt>
+                              <dd>{{scaling.minReplicas}}</dd>
+                              <dt>Max Pods:</dt>
+                              <dd>{{scaling.maxReplicas}}</dd>
+                              <dt>Target CPU:</dt>
+                              <!-- TODO: Handle request/limit ratios. -->
+                              <dd ng-if-end>{{scaling.targetCPU}}</dd>
+
+                              <!-- Env vars -->
+                            </dl>
+
+                            <div ng-if="routing.portOptions.length">
+                              <h3>
+                                Routing
+                                <div class="edit-action"><a href="" ng-click="goToStep('Routing')">Edit</a></div>
+                              </h3>
+                              <dl class="dl-horizontal left">
+                                <dt>Create Route:<dt>
+                                <dd>{{routing.include | yesNo}}</dd>
+                                <dt ng-if-start="routing.host">Hostname:<dt>
+                                <dd ng-if-end>{{routing.host}}</dd>
+                                <dt ng-if-start="routing.path">Path:<dt>
+                                <dd ng-if-end>{{routing.path}}</dd>
+                                <dt>Target Port:</dt>
+                                <dd>{{routing.targetPort.label}}</dd>
+                                <dt ng-if-start="routing.tls.termination">Termination:</dt>
+                                <dd ng-if-end>{{routing.tls.termination}}</dd>
+                              </dl>
+                            </div>
+
+                            <h3>
+                              Resource Limits
+                              <div class="edit-action"><a href="" ng-click="goToStep('Limits')">Edit</a></div>
+                            </h3>
+                            <div ng-if="!hasLimits()">
+                              <em>None</em>
+                            </div>
+                            <div ng-if="hasLimits()">
+                              <dl class="dl-horizontal left">
+                                <dt ng-if-start="container.resources.requests.cpu">CPU Request:</dt>
+                                <dd ng-if-end>{{container.resources.requests.cpu}}</dd>
+                                <dt ng-if-start="container.resources.limits.cpu">CPU Limit:</dt>
+                                <dd ng-if-end>{{container.resources.limits.cpu}}</dd>
+                                <dt ng-if-start="container.resources.requests.memory">Memory Request:</dt>
+                                <dd ng-if-end>{{container.resources.requests.memory}}</dd>
+                                <dt ng-if-start="container.resources.limits.memory">Memory Limit:</dt>
+                                <dd ng-if-end>{{container.resources.limits.memory}}</dd>
+                              </dl>
+                            </div>
+
+                            <h3>
+                              Labels
+                              <div class="edit-action"><a href="" ng-click="goToStep('Labels')">Edit</a></div>
+                            </h3>
+                            <div ng-if="(labels | hashSize) === 0">
+                              <em>None</em>
+                            </div>
+                            <div ng-if="(labels | hashSize) > 0">
+                              <osc-key-values
+                                key-title="Labels"
+                                entries="labels"
+                                editable="false"
+                                can-toggle="false">
+                              </osc-key-values>
+                            </div>
+
+                          </wz-step>
+
+                          <fieldset ng-disabled="!validate()" class="wizard-buttons">
+                            <div class="pull-right" ng-if="!onLastStep()">
                               <button wz-previous ng-show="previousEnabled()" class="btn btn-default">
                                 <i class="fa fa-angle-left" aria-hidden="true"></i>
                                 Previous
                               </button>
-                              <button wz-next ng-show="nextEnabled()" class="btn btn-default mar-left-sm">
+                              <button wz-next class="btn btn-default mar-left-sm">
                                 Next
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                               </button>
                             </div>
-                            <!-- unable to use form.valid.  need to fix validators in labels and key values directive -->
+                            <span ng-if="!onLastStep()">
+                              <button ng-click="goToStep('Review')"
+                                      class="btn btn-primary">
+                                Review and Create
+                              </button>
+                            </span>
                             <button type="submit"
-                                class="btn btn-primary"
-                                ng-disabled="form.$invalid || nameTaken || cpuProblems.length || memoryProblems.length || disableInputs"
-                                >Create</button>
-                            <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-sm">Cancel</a>
-                          </div>
+                                    ng-if="onLastStep()"
+                                    class="btn btn-primary">
+                              Create
+                            </button>
+                            <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
+                          </fieldset>
                         </wizard>
                         </form>
                         <div ng-hide="imageStream">
