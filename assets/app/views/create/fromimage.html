@@ -20,7 +20,7 @@
                     <div class="col-md-8">
                       <fieldset ng-disabled="disableInputs">
                         <form class="" ng-show="imageStream" novalidate name="form" ng-submit="createApp()">
-                        <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html">
+                        <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html" class="wizard">
                           <wz-step wz-title="Source" canexit="validate">
                             <osc-image-summary resource="image" name="imageName"></osc-image-summary>
                             <div class="clearfix visible-xs-block"></div>
@@ -465,30 +465,32 @@
 
                           </wz-step>
 
-                          <fieldset ng-disabled="!validate()" class="wizard-buttons">
-                            <div class="pull-right" ng-if="!onLastStep()">
-                              <button wz-previous ng-show="previousEnabled()" class="btn btn-default">
-                                <i class="fa fa-angle-left" aria-hidden="true"></i>
-                                Previous
-                              </button>
-                              <button wz-next class="btn btn-default mar-left-sm">
-                                Next
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                              </button>
-                            </div>
-                            <span ng-if="!onLastStep()">
-                              <button ng-click="goToStep('Review')"
+                          <div class="wizard-buttons">
+                            <fieldset ng-disabled="!validate()">
+                              <div class="pull-right" ng-if="!onLastStep()">
+                                <button wz-previous ng-show="previousEnabled()" class="btn btn-default">
+                                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                  Previous
+                                </button>
+                                <button wz-next class="btn btn-default mar-left-sm">
+                                  Next
+                                  <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                </button>
+                              </div>
+                              <span ng-if="!onLastStep()">
+                                <button ng-click="goToStep('Review')"
+                                        class="btn btn-primary">
+                                  Review and Create
+                                </button>
+                              </span>
+                              <button type="submit"
+                                      ng-if="onLastStep()"
                                       class="btn btn-primary">
-                                Review and Create
+                                Create
                               </button>
-                            </span>
-                            <button type="submit"
-                                    ng-if="onLastStep()"
-                                    class="btn btn-primary">
-                              Create
-                            </button>
-                            <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
-                          </fieldset>
+                              <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
+                            </fieldset>
+                          </div>
                         </wizard>
                         </form>
                         <div ng-hide="imageStream">

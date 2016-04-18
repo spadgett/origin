@@ -1,41 +1,52 @@
-// Create wizard
-.steps-indicator {
-  @media (min-width:@screen-sm-min) {
-    margin-bottom: 50px;
-  }
-  li {
-    padding-top: 15px;
-    a {
-      text-transform: none;
-      font-weight: 500;
-    }
-  }
-}
 .ng-invalid .steps-indicator li:not(.editing) a {
   cursor: not-allowed;
 }
-.step {
-  padding-right: 10px;
-  // height: 400px;
-  // overflow-y: auto;
-}
-.review-step {
-  h3 {
-    font-size: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #d1d1d1;
-    .edit-action {
-      .pull-right();
-      .small();
-      margin-top: 5px;
+.wizard {
+  padding-bottom: 60px;
+  .steps-indicator {
+    @media (min-width:@screen-sm-min) {
+      margin-bottom: 50px;
+    }
+    li {
+      padding-top: 15px;
+      a {
+        text-transform: none;
+        font-weight: 500;
+      }
     }
   }
-  dt {
-    font-weight: normal;
-    color: #393f44;
+  .step {
+    padding-right: 10px;
+    // height: 400px;
+    // overflow-y: auto;
+  }
+  .review-step {
+    h3 {
+      font-size: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #d1d1d1;
+      .edit-action {
+        .pull-right();
+        .small();
+        margin-top: 5px;
+      }
+    }
+    dt {
+      font-weight: normal;
+      color: #393f44;
+    }
   }
 }
+
 .wizard-buttons {
-  .pad-top-lg();
-  clear: both;
+  // .pad-top-lg();
+  // clear: both;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin-right: 30px;
+  background-color: #f2f2f2;
+  width: 100%;
+  padding: 20px;
+  border-top: 1px solid #d1d1d1;
 }
