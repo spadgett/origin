@@ -1,23 +1,49 @@
-.ng-invalid .steps-indicator li:not(.editing) a {
-  cursor: not-allowed;
-}
-.wizard {
-  .steps-indicator {
-    @media (min-width:@screen-sm-min) {
-      margin-bottom: 50px;
-    }
-    li {
-      padding-top: 15px;
-      a {
-        text-transform: none;
-        font-weight: 500;
-      }
+.ng-invalid .wizard-sections li:not(.editing) {
+  &, a {
+    .text-muted();
+    cursor: not-allowed;
+    &:hover, &:active, &:focus {
+      .text-muted();
+      text-decoration: none;
     }
   }
-  .step {
-    // padding-right: 10px;
-    // height: 400px;
-    // overflow-y: auto;
+}
+
+@wizard-indicator-max-width: 190px;
+
+.wizard {
+  padding-bottom: 90px;
+  .wizard-sections {
+    .text-center();
+    .step-subheading {
+      color: @gray-light;
+      font-weight: 600;
+      margin: 5px 0 3px;
+    }
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      li {
+        display: inline-block;
+        margin: 0;
+        padding: 0 10px 5px;
+        .fa {
+          margin-right: 5px;
+        }
+      }
+      li.editing {
+        font-weight: 600;
+      }
+    }
+    @media(min-width: @screen-sm-min) {
+      .text-left();
+      margin-top: 21px;
+      max-width: @wizard-indicator-max-width;
+      ul li {
+        display: block;
+      }
+    }
   }
   .review-step {
     h3 {
@@ -35,28 +61,24 @@
       color: #393f44;
     }
   }
+  @media(min-width: @screen-sm-min) {
+    .steps {
+      padding: 0 20px;
+    }
+  }
 }
 
 .wizard-bottom {
   border-top: 1px solid @connector-color;
+  bottom: 0;
+  height: 80px;
+  position: fixed;
+  width: 100%;
+  z-index: 2;
 }
 .wizard-buttons {
-  padding: 20px 0;
-  clear: both;
-  .previous-next-btns {
-    text-align: center;
-    @media(min-width: @screen-xs-min) { 
-      float: right;
-      text-align: right;
-    };
-  }
-  .create-cancel-btns {
-    display: block;
-    margin-top: 20px;
-    text-align: center;
-    @media(min-width: @screen-xs-min) { 
-      margin-top: 0;
-      text-align: left;
-    };
+  padding: 20px;
+  @media(min-width: @screen-sm-min) {
+    margin-left: @wizard-indicator-max-width;
   }
 }

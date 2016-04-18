@@ -1,13 +1,27 @@
-<div>
-  <!--
-    Put the wizard steps indicator at the top. It defaults to the bottom.
-    See https://github.com/mgonto/angular-wizard/issues/128
-    Also, hide the steps at mobile widths since they don't display well.
-  -->
-  <ul class="steps-indicator steps-{{getEnabledSteps().length}} hidden-xs" ng-if="!hideIndicators">
-    <li ng-class="{default: !step.completed && !step.selected, current: step.selected && !step.completed, done: step.completed && !step.selected, editing: step.selected && step.completed}" ng-repeat="step in getEnabledSteps()">
-      <a ng-click="goTo(step)">{{step.title || step.wzTitle}}</a>
-    </li>
-  </ul>
-  <div class="steps" ng-transclude></div>
+<div class="row">
+  <div ng-if="!hideIndicators" ng-init="enabledSteps = getEnabledSteps()" class="col-sm-3 wizard-sections">
+    <!-- <span class="fa fa-cubes"></span> -->
+    <ul>
+      <li class="fa-ul" ng-class="{default: !step.completed && !step.selected, current: step.selected && !step.completed, done: step.completed && !step.selected, editing: step.selected && step.completed}" ng-repeat="step in getEnabledSteps()">
+        <!-- FIXME -->
+        <!-- <div ng-if="$first" class="step-subheading">Required Steps</div> -->
+        <!-- <div ng-if="$index === 1" class="step-subheading">Optional Steps</div> -->
+        <!-- <div ng-if="$last" class="step-subheading">Review and Create</div> -->
+        <span ng-if="step.selected">
+          <i class="fa fa-circle" aria-hidden="true"></i>
+          {{step.title || step.wzTitle}}
+        </span>
+        <span ng-if="!step.selected">
+          <i class="fa fa-circle-thin text-muted" aria-hidden="true"></i>
+          <a href="" ng-click="goTo(step)" ng-if="!step.selected">{{step.title || step.wzTitle}}</a>
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <select class="visible-xs form-control mar-bottom-lg"> -->
+  <!--   <option ng-repeat="step in getEnabledSteps()">{{step.title || step.wzTitle}}</option> -->
+  <!-- </select> -->
+
+  <div ng-transclude class="steps col-sm-9"></div>
 </div>

@@ -6,514 +6,520 @@
   <div class="middle">
     <!-- Middle section -->
     <div class="middle-section surface-shaded">
-      <div id="scrollable-content" class="middle-container has-scroll middle-bottom-fixed">
+      <div id="scrollable-content" class="middle-container has-scroll">
         <div class="middle-content">
-          <div class="container surface-shaded">
+          <div class="container-fluid surface-shaded">
             <breadcrumbs breadcrumbs="breadcrumbs"></breadcrumbs>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="osc-form">
-                  <div class="row">
-                    <div class="col-md-2 template-name gutter-top hidden-sm hidden-xs">
-                      <span class="fa fa-cubes"></span>
-                    </div>
-                    <div class="col-md-8">
-                      <fieldset ng-disabled="disableInputs">
-                        <form class="" ng-show="imageStream" novalidate name="form" ng-submit="createApp()">
-                        <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html" class="wizard">
-                          <wz-step wz-title="Source" canexit="validate">
-                            <osc-image-summary resource="image" name="imageName"></osc-image-summary>
-                            <div class="clearfix visible-xs-block"></div>
-                            <div class="form-group">
-                             <label for="appname" class="required">Name</label>
-                             <!--
-                               Only validate the name pattern and minlength if the field has both been changed and blurred.  This
-                               avoids a lot of problems clicking on the try it / more options links below.  Don't use $touched,
-                               which causes validation error messages to flash when typing in the field after clicking one of the
-                               links. Show the required error if the user enters and deletes the value, even if the field still
-                               has focus.
-                             -->
-                             <div ng-class="{'has-error': (form.appname.$error.required && form.appname.$dirty) || (form.appname.$invalid && shouldValidateName) || nameTaken}">
-                               <input type="text"
-                                      required
-                                      take-focus
-                                      minlength="2"
-                                      maxlength="24"
-                                      pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
-                                      ng-model="name"
-                                      id="appname"
-                                      name="appname"
-                                      ng-change="nameTaken = false"
-                                      ng-blur="shouldValidateName = form.appname.$dirty"
-                                      class="form-control"
-                                      autocorrect="off"
-                                      autocapitalize="off"
-                                      spellcheck="false">
-                              </div>
-                              <div class="help-block">Identifies the resources created for this application.</div>
-                              <div class="has-error" ng-show="form.appname.$error.required && form.appname.$dirty">
-                                <span class="help-block">A name is required.</span>
-                              </div>
-                              <div class="has-error" ng-show="form.appname.$error.pattern && shouldValidateName">
-                                <span class="help-block"><strong>Please enter a valid name.</strong>
-                                <p>A valid name is applied to all generated resources. It is an alphanumeric (a-z, and 0-9) string with a maximum length of 24 characters, where the first character is a letter (a-z), and the '-' character is allowed anywhere except the first or last character.</p>
-                                </span>
-                              </div>
-                              <div class="has-error" ng-show="form.appname.$error.minlength && shouldValidateName">
-                                <span class="help-block">The name must have at least 2 characters.</span>
-                              </div>
-                              <div class="has-error" ng-show="nameTaken">
-                                <span class="help-block">This name is already in use within the project. Please choose a different name.</span>
-                              </div>
-                            </div>
-
-                            <div class="form-group">
-                              <label for="sourceUrl" class="required">Git Repository URL</label>
-                              <div ng-class="{'has-warning': form.sourceUrl.$dirty && !sourceURLPattern.test(buildConfig.sourceUrl), 'has-error': (form.sourceUrl.$error.required && form.sourceUrl.$dirty)}">
-                                <!-- Unfortunately, we can't set type="url" because some valid values don't pass browser validation. -->
-                                <input class="form-control"
-                                  id="sourceUrl"
-                                  name="sourceUrl"
-                                  type="text"
-                                  required
-                                  aria-describedby="from_source_help"
-                                  ng-model="buildConfig.sourceUrl"
-                                  autocorrect="off"
-                                  autocapitalize="off"
-                                  spellcheck="false">
-                              </div>
-                              <div ng-if="image.metadata.annotations.sampleRepo" class="help-block">
-                                Sample repository for {{imageName}}: {{image.metadata.annotations.sampleRepo}}<span ng-if="image.metadata.annotations.sampleRef">,
-                                  ref: {{image.metadata.annotations.sampleRef}}</span><span ng-if="image.metadata.annotations.sampleContextDir">,
-                                  context dir: {{image.metadata.annotations.sampleContextDir}}</span>
-                                <a href="" ng-click="fillSampleRepo()"
-                                  style="margin-left: 3px;" class="nowrap">Try it<i class="fa fa-level-up" style="margin-left: 3px; font-size: 17px;"></i></a>
-                              </div>
-                              <div class="has-error" ng-show="form.sourceUrl.$error.required && form.sourceUrl.$dirty">
-                                <span class="help-block">A Git repository URL is required.</span>
-                              </div>
-                              <div>
-                                <span class="text-warning" ng-if="form.sourceUrl.$dirty && !sourceURLPattern.test(buildConfig.sourceUrl)">Git repository should be a URL.</span>
-                              </div>
-                            </div>
-
-                            <div click-to-reveal link-text="Show advanced source options">
-                              <div class="form-group">
-                                <label for="gitref">Git Reference</label>
-                                <div>
-                                  <input
-                                    id="gitref"
-                                    ng-model="buildConfig.gitRef"
-                                    type="text"
-                                    placeholder="master"
-                                    autocorrect="off"
-                                    autocapitalize="off"
-                                    spellcheck="false"
-                                    class="form-control">
-                                </div>
-                                <div class="help-block">Optional branch, tag, or commit.</div>
-                              </div>
-
-                              <div class="form-group">
-                                <label for="contextdir">Context Dir</label>
-                                <div>
-                                  <input
-                                    id="contextdir"
-                                    ng-model="buildConfig.contextDir"
-                                    type="text"
-                                    placeholder="/"
-                                    autocorrect="off"
-                                    autocapitalize="off"
-                                    spellcheck="false"
-                                    class="form-control">
-                                </div>
-                                <div class="help-block">Optional subdirectory for the application source code, used as the context directory for the build.</div>
-                              </div>
-                            </div>
-                          </wz-step>
-
-                          <wz-step wz-title="Build" canexit="validate">
-                            <h2>Build Configuration</h2>
-
-                            <div class="help-block">
-                              Build configurations describe how to build your deployable image.
-                              This includes your source, the base builder image, and when to
-                              launch new builds.
-                            </div>
-
-                            <h3>Triggers</h3>
-                            <div class="checkbox">
-                              <label>
-                                <input type="checkbox" ng-model="buildConfig.buildOnSourceChange"/>
-                                Configure a webhook build trigger
-                                <span class="help action-inline">
-                                  <a href data-toggle="tooltip"
-                                     data-original-title="The source repository must be configured to use the webhook to trigger a build when source is committed.">
-                                    <i class="pficon pficon-help"></i>
-                                  </a>
-                                </span>
-                              </label>
-                            </div>
-                            <div class="checkbox">
-                              <label>
-                                <input type="checkbox" ng-model="buildConfig.buildOnImageChange"/>
-                                Automatically build a new image when the builder image changes
-                                <span class="help action-inline">
-                                  <a href data-toggle="tooltip" data-original-title="Automatically building a new image when the builder image changes allows your code to always run on the latest updates.">
-                                  <i class="pficon pficon-help"></i>
-                                  </a>
-                                </span>
-                              </label>
-                            </div>
-                            <div class="checkbox">
-                              <label>
-                                <input type="checkbox" ng-model="buildConfig.buildOnConfigChange"/>
-                                Automatically build a new image when the build configuration changes
-                              </label>
-                            </div>
-                            <h3>Environment Variables (Build and Runtime) <span class="help action-inline">
-                              <a href data-toggle="tooltip"
-                                 data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will be available during your build and at runtime.">
-                                <i class="pficon pficon-help"></i>
-                              </a>
-                            </span></h3>
-                            <osc-key-values
-                              entries="buildConfig.envVars"
-                              delimiter="="
-                              key-validator="env"
-                              delete-policy="added"
-                              key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
-                          </wz-step>
-
-                          <!-- /build config -->
-
-                          <wz-step wz-title="Deployment" canexit="validate">
-                            <h2>Deployment Configuration</h2>
-                            <div class="help-block">
-                              Deployment configurations describe how your application is
-                              configured by the cluster and what conditions trigger a deployment.
-                            </div>
-
-                            <h3>Autodeploy when</h3>
-                            <div class="checkbox">
-                              <label>
-                                <input type="checkbox" ng-model="deploymentConfig.deployOnNewImage">
-                                New image is available
-                              </label>
-                            </div>
-                            <div class="checkbox">
-                            <label>
-                              <input type="checkbox" ng-model="deploymentConfig.deployOnConfigChange">
-                              Deployment configuration changes
-                            </label>
-                            </div>
-                            <h3>Scaling</h3>
-                            <div class="help-block">
-                              Scaling defines the number of running instances of your built image.
-                            </div>
-                            <div class="form-group">
-                              <label for="scale-type">Scaling Strategy</label>
-                              <select ng-model="scaling.autoscale"
-                                      ng-options="option.value as option.label for option in scaling.autoscaleOptions"
-                                      id="scale-type"
-                                      class="form-control"
-                                      aria-describedby="scale-type-help">
-                              </select>
-                              <div class="help-block" id="scale-type-help">
-                                Scale replicas manually or automatically based on CPU usage.
-                              </div>
-                              <div class="learn-more-block">
-                                <a href="{{'pod_autoscaling' | helpLink}}" target="_blank">Learn more <i class="fa fa-external-link" aria-hidden> </i></a>
-                              </div>
-                              <div class="has-warning" ng-if="metricsWarning && scaling.autoscale">
-                                <span class="help-block">
-                                  CPU metrics might not be available. In order to use horizontal pod autoscalers,
-                                  your cluster administrator must have properly configured cluster metrics.
-                                </span>
-                              </div>
-                            </div>
-                            <div class="form-group" ng-if="!scaling.autoscale">
-                              <label class="number">Replicas</label>
-                              <input type="number"
-                                     class="form-control"
-                                     min="0"
-                                     name="replicas"
-                                     ng-model="scaling.replicas"
-                                     ng-required="!scaling.autoscale"
-                                     ng-disabled="scaling.autoscale"
-                                     ng-pattern="/^\d+$/"
-                                     aria-describedby="replicas-help">
-                              <div id="replicas-help">
-                                <span class="help-block">The number of instances of your image.</span>
-                              </div>
-                              <div class="has-error" ng-show="form.replicas.$dirty && form.replicas.$invalid">
-                                <span class="help-block">Replicas must be an integer value greater than or equal to 0.</span>
-                              </div>
-                            </div>
-
-                            <osc-autoscaling
-                                ng-if="scaling.autoscale"
-                                model="scaling"
-                                project="project">
-                            </osc-autoscaling>
-
-                            <div class="has-warning" ng-if="showCPURequestWarning">
-                              <span class="help-block">
-                                You should configure resource limits below for autoscaling.
-                                Autoscaling will not work without a CPU
-                                <span ng-if="'cpu' | isRequestCalculated : project">limit.</span>
-                                <span ng-if="!('cpu' | isRequestCalculated : project)">request.</span>
-                                <span ng-if="'cpu' | isLimitCalculated : project">
-                                  The CPU limit will be automatically calculated from the container memory limit.
-                                </span>
-                              </span>
-                            </div>
-                            <h3>Environment Variables (Runtime only) <span class="help action-inline">
-                              <a href data-toggle="tooltip"
-                                 data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will only be available at runtime.">
-                                <i class="pficon pficon-help"></i>
-                              </a>
-                            </span></h3>
-                            <osc-key-values
-                              entries="deploymentConfig.envVars"
-                              delimiter="="
-                              key-validator="env"
-                              delete-policy="added"
-                              key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
-                          </wz-step>
-
-                          <!-- /deployment config -->
-
-                          <!-- Only show routing options if the image has exposed ports. -->
-                          <wz-step wz-title="Routing" wz-disabled="!routing.portOptions.length">
-                            <h2>Routing</h2>
-                            <div class="help-block">
-                              Routing is a way to make your application publicly visible. Otherwise
-                              you may only be able to access your application by its IP address, if
-                              allowed by the system administrator.
-                            </div>
-                            <div class="form-group checkbox">
-                              <label>
-                                <input type="checkbox" ng-model="routing.include">
-                                Create a route to the application
-                              </label>
-                            </div>
-                            <osc-routing
-                              model="routing"
-                              routing-disabled="!routing.include">
-                            </osc-routing>
-                          </wz-step>
-
-                          <!-- /routing -->
-
-                          <wz-step wz-title="Limits" canexit="validate">
-                            <h2>Resource Limits</h2>
-                            <div class="help-block">
-                              Resource limits control compute resource usage by a container on a node.
-                            </div>
-                            <edit-request-limit
-                                resources="container.resources"
-                                type="cpu"
-                                limit-ranges="limitRanges"
-                                request-calculated="cpuRequestCalculated"
-                                limit-calculated="cpuLimitCalculated">
-                            </edit-request-limit>
-                            <edit-request-limit
-                                resources="container.resources"
-                                type="memory"
-                                limit-ranges="limitRanges"
-                                request-calculated="memoryRequestCalculated">
-                            </edit-request-limit>
-                            <div ng-repeat="problem in cpuProblems" class="has-error">
-                              <span class="help-block">{{problem}}</span>
-                            </div>
-                            <div ng-repeat="problem in memoryProblems" class="has-error">
-                              <span class="help-block">{{problem}}</span>
-                            </div>
-                          </wz-step>
-
-                          <!-- /limits -->
-
-                          <wz-step wz-title="Labels" canexit="validate">
-                            <h2>Labels</h2>
-                            <div class="help-block mar-bottom-lg">
-                              Labels are used to organize, group, or select objects and resources,
-                              such as pods. Each label is applied to each resource created.
-                            </div>
-                            <label-editor
-                                labels="labels"
-                                expand="true"
-                                can-toggle="false"
-                                help-text="Each label is applied to each created resource.">
-                            </label-editor>
-                          </wz-step>
-
-                          <wz-step wz-title="Review" class="review-step">
-                            <h2>Review and Create</h2>
-                            <div class="help-block mar-bottom-lg">
-                              Review the options you've selected and click create when ready.
-                            </div>
-
-                            <h3>
-                              Source
-                              <div class="edit-action"><a href="" ng-click="goToStep('Source')">Edit</a></div>
-                            </h3>
-                            <dl class="dl-horizontal left">
-                              <dt>Name:<dt>
-                              <!-- FIXME!! -->
-                              <dd>{{form.appname.$modelValue}}</dd>
-                              <dt>Git Repository URL:<dt>
-                              <dd>{{buildConfig.sourceUrl}}</dd>
-                              <dt ng-if-start="buildConfig.gitRef">Git Reference:</dt>
-                              <dd ng-if-end>{{buildConfig.gitRef}}</dd>
-                              <dt ng-if-start="buildConfig.contextDir">Context Dir:</dt>
-                              <dd ng-if-end>{{buildConfig.contextDir}}</dd>
-                            </dl>
-
-                            <h3>
-                              Build Configuration
-                              <div class="edit-action"><a href="" ng-click="goToStep('Build')">Edit</a></div>
-                            </h3>
-                            <dl class="dl-horizontal left">
-                              <dt>Webhook Trigger:<dt>
-                              <dd>{{buildConfig.buildOnSourceChange | yesNo}}</dd>
-                              <dt>Image Change Trigger:<dt>
-                              <dd>{{buildConfig.buildOnImageChange | yesNo}}</dd>
-                              <dt>Config Change Trigger:<dt>
-                              <dd>{{buildConfig.buildOnConfigChange | yesNo}}</dd>
-                              <!-- Env vars -->
-                            </dl>
-
-                            <h3>
-                              Deployment Configuration
-                              <div class="edit-action"><a href="" ng-click="goToStep('Deployment')">Edit</a></div>
-                            </h3>
-                            <dl class="dl-horizontal left">
-                              <dt>Image Trigger:<dt>
-                              <dd>{{deploymentConfig.deployOnNewImage | yesNo}}</dd>
-                              <dt>Config Change Trigger:<dt>
-                              <dd>{{deploymentConfig.deployOnConfigChange | yesNo}}</dd>
-
-                              <dt ng-if-start="!scaling.autoscale">Replicas:</dt>
-                              <dd ng-if-end>{{scaling.replicas}}</dd>
-
-                              <dt ng-if-start="scaling.autoscale">Min Pods:</dt>
-                              <dd>{{scaling.minReplicas}}</dd>
-                              <dt>Max Pods:</dt>
-                              <dd>{{scaling.maxReplicas}}</dd>
-                              <dt>Target CPU:</dt>
-                              <!-- TODO: Handle request/limit ratios. -->
-                              <dd ng-if-end>{{scaling.targetCPU}}</dd>
-
-                              <!-- Env vars -->
-                            </dl>
-
-                            <div ng-if="routing.portOptions.length">
-                              <h3>
-                                Routing
-                                <div class="edit-action"><a href="" ng-click="goToStep('Routing')">Edit</a></div>
-                              </h3>
-                              <dl class="dl-horizontal left">
-                                <dt>Create Route:<dt>
-                                <dd>{{routing.include | yesNo}}</dd>
-                                <dt ng-if-start="routing.host">Hostname:<dt>
-                                <dd ng-if-end>{{routing.host}}</dd>
-                                <dt ng-if-start="routing.path">Path:<dt>
-                                <dd ng-if-end>{{routing.path}}</dd>
-                                <dt>Target Port:</dt>
-                                <dd>{{routing.targetPort.label}}</dd>
-                                <dt ng-if-start="routing.tls.termination">Termination:</dt>
-                                <dd ng-if-end>{{routing.tls.termination}}</dd>
-                              </dl>
-                            </div>
-
-                            <h3>
-                              Resource Limits
-                              <div class="edit-action"><a href="" ng-click="goToStep('Limits')">Edit</a></div>
-                            </h3>
-                            <div ng-if="!hasLimits()">
-                              <em>None</em>
-                            </div>
-                            <div ng-if="hasLimits()">
-                              <dl class="dl-horizontal left">
-                                <dt ng-if-start="container.resources.requests.cpu">CPU Request:</dt>
-                                <dd ng-if-end>{{container.resources.requests.cpu}}</dd>
-                                <dt ng-if-start="container.resources.limits.cpu">CPU Limit:</dt>
-                                <dd ng-if-end>{{container.resources.limits.cpu}}</dd>
-                                <dt ng-if-start="container.resources.requests.memory">Memory Request:</dt>
-                                <dd ng-if-end>{{container.resources.requests.memory}}</dd>
-                                <dt ng-if-start="container.resources.limits.memory">Memory Limit:</dt>
-                                <dd ng-if-end>{{container.resources.limits.memory}}</dd>
-                              </dl>
-                            </div>
-
-                            <h3>
-                              Labels
-                              <div class="edit-action"><a href="" ng-click="goToStep('Labels')">Edit</a></div>
-                            </h3>
-                            <div ng-if="(labels | hashSize) === 0">
-                              <em>None</em>
-                            </div>
-                            <div ng-if="(labels | hashSize) > 0">
-                              <osc-key-values
-                                key-title="Labels"
-                                entries="labels"
-                                editable="false"
-                                can-toggle="false">
-                              </osc-key-values>
-                            </div>
-
-                          </wz-step>
-
-                        <div ng-hide="imageStream">
-                          {{ emptyMessage }}
+            <div class="osc-form">
+              <fieldset ng-disabled="disableInputs">
+                <form class="" ng-show="imageStream" novalidate name="form" ng-submit="createApp()">
+                  <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html" class="wizard">
+                    <wz-step wz-title="Source" canexit="validate">
+                      <osc-image-summary resource="image" name="imageName"></osc-image-summary>
+                      <div class="clearfix visible-xs-block"></div>
+                      <div class="form-group">
+                       <label for="appname" class="required">Name</label>
+                       <!--
+                         Only validate the name pattern and minlength if the field has both been changed and blurred.  This
+                         avoids a lot of problems clicking on the try it / more options links below.  Don't use $touched,
+                         which causes validation error messages to flash when typing in the field after clicking one of the
+                         links. Show the required error if the user enters and deletes the value, even if the field still
+                         has focus.
+                       -->
+                       <div ng-class="{'has-error': (form.appname.$error.required && form.appname.$dirty) || (form.appname.$invalid && shouldValidateName) || nameTaken}">
+                         <input type="text"
+                                required
+                                take-focus
+                                minlength="2"
+                                maxlength="24"
+                                pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
+                                ng-model="name"
+                                id="appname"
+                                name="appname"
+                                ng-change="nameTaken = false"
+                                ng-blur="shouldValidateName = form.appname.$dirty"
+                                class="form-control"
+                                autocorrect="off"
+                                autocapitalize="off"
+                                spellcheck="false">
                         </div>
-                      </fieldset>
-                    </div>
-                  </div><!-- /row -->
-                </div><!-- /osc-form -->
-              </div><!-- /col-* -->
-            </div><!-- /row -->
-          </div><!-- /container -->
-        </wizard>
-        </form>
-        </div><!-- /middle-content -->
-        <div class="middle-bottom wizard-bottom surface-shaded">
-            <div class="container surface-shaded">
-              <div class="row">
-                <div class="col-md-offset-2 col-md-8">
-                  <div class="wizard-buttons">
-                    <fieldset ng-disabled="!validate()">
-                      <div class="previous-next-btns" ng-if="!onLastStep()">
-                        <button wz-previous ng-show="previousEnabled()" class="btn btn-default">
-                          <i class="fa fa-angle-left" aria-hidden="true"></i>
-                          Previous
-                        </button>
-                        <button wz-next class="btn btn-default mar-left-sm">
-                          Next
-                          <i class="fa fa-angle-right" aria-hidden="true"></i>
-                        </button>
+                        <div class="help-block">Identifies the resources created for this application.</div>
+                        <div class="has-error" ng-show="form.appname.$error.required && form.appname.$dirty">
+                          <span class="help-block">A name is required.</span>
+                        </div>
+                        <div class="has-error" ng-show="form.appname.$error.pattern && shouldValidateName">
+                          <span class="help-block"><strong>Please enter a valid name.</strong>
+                          <p>A valid name is applied to all generated resources. It is an alphanumeric (a-z, and 0-9) string with a maximum length of 24 characters, where the first character is a letter (a-z), and the '-' character is allowed anywhere except the first or last character.</p>
+                          </span>
+                        </div>
+                        <div class="has-error" ng-show="form.appname.$error.minlength && shouldValidateName">
+                          <span class="help-block">The name must have at least 2 characters.</span>
+                        </div>
+                        <div class="has-error" ng-show="nameTaken">
+                          <span class="help-block">This name is already in use within the project. Please choose a different name.</span>
+                        </div>
                       </div>
-                      <div class="create-cancel-btns">
-                        <span ng-if="!onLastStep()">
-                          <button ng-click="goToStep('Review')"
-                                  class="btn btn-primary">
-                            Review and Create
-                          </button>
+
+                      <div class="form-group">
+                        <label for="sourceUrl" class="required">Git Repository URL</label>
+                        <div ng-class="{'has-warning': form.sourceUrl.$dirty && !sourceURLPattern.test(buildConfig.sourceUrl), 'has-error': (form.sourceUrl.$error.required && form.sourceUrl.$dirty)}">
+                          <!-- Unfortunately, we can't set type="url" because some valid values don't pass browser validation. -->
+                          <input class="form-control"
+                            id="sourceUrl"
+                            name="sourceUrl"
+                            type="text"
+                            required
+                            aria-describedby="from_source_help"
+                            ng-model="buildConfig.sourceUrl"
+                            autocorrect="off"
+                            autocapitalize="off"
+                            spellcheck="false">
+                        </div>
+                        <div ng-if="image.metadata.annotations.sampleRepo" class="help-block">
+                          Sample repository for {{imageName}}: {{image.metadata.annotations.sampleRepo}}<span ng-if="image.metadata.annotations.sampleRef">,
+                            ref: {{image.metadata.annotations.sampleRef}}</span><span ng-if="image.metadata.annotations.sampleContextDir">,
+                            context dir: {{image.metadata.annotations.sampleContextDir}}</span>
+                          <a href="" ng-click="fillSampleRepo()"
+                            style="margin-left: 3px;" class="nowrap">Try it<i class="fa fa-level-up" style="margin-left: 3px; font-size: 17px;"></i></a>
+                        </div>
+                        <div class="has-error" ng-show="form.sourceUrl.$error.required && form.sourceUrl.$dirty">
+                          <span class="help-block">A Git repository URL is required.</span>
+                        </div>
+                        <div>
+                          <span class="text-warning" ng-if="form.sourceUrl.$dirty && !sourceURLPattern.test(buildConfig.sourceUrl)">Git repository should be a URL.</span>
+                        </div>
+                      </div>
+
+                      <div click-to-reveal link-text="Set a branch, tag, or build context dir">
+                        <div class="form-group">
+                          <label for="gitref">Git Reference</label>
+                          <div>
+                            <input
+                              id="gitref"
+                              ng-model="buildConfig.gitRef"
+                              type="text"
+                              placeholder="master"
+                              autocorrect="off"
+                              autocapitalize="off"
+                              spellcheck="false"
+                              class="form-control">
+                          </div>
+                          <div class="help-block">Optional branch, tag, or commit.</div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="contextdir">Context Dir</label>
+                          <div>
+                            <input
+                              id="contextdir"
+                              ng-model="buildConfig.contextDir"
+                              type="text"
+                              placeholder="/"
+                              autocorrect="off"
+                              autocapitalize="off"
+                              spellcheck="false"
+                              class="form-control">
+                          </div>
+                          <div class="help-block">Optional subdirectory for the application source code, used as the context directory for the build.</div>
+                        </div>
+                      </div>
+                    </wz-step>
+
+                    <wz-step wz-title="Build" canexit="validate">
+                      <h2>Build Configuration</h2>
+
+                      <div class="help-block">
+                        Build configurations describe how to build your deployable image.
+                        This includes your source, the base builder image, and when to
+                        launch new builds.
+                      </div>
+
+                      <h3>Triggers</h3>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="buildConfig.buildOnSourceChange"/>
+                          Configure a webhook build trigger
+                          <span class="help action-inline">
+                            <a href data-toggle="tooltip"
+                               data-original-title="The source repository must be configured to use the webhook to trigger a build when source is committed.">
+                              <i class="pficon pficon-help"></i>
+                            </a>
+                          </span>
+                        </label>
+                      </div>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="buildConfig.buildOnImageChange"/>
+                          Automatically build a new image when the builder image changes
+                          <span class="help action-inline">
+                            <a href data-toggle="tooltip" data-original-title="Automatically building a new image when the builder image changes allows your code to always run on the latest updates.">
+                            <i class="pficon pficon-help"></i>
+                            </a>
+                          </span>
+                        </label>
+                      </div>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="buildConfig.buildOnConfigChange"/>
+                          Automatically build a new image when the build configuration changes
+                        </label>
+                      </div>
+                      <h3>Environment Variables (Build and Runtime) <span class="help action-inline">
+                        <a href data-toggle="tooltip"
+                           data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will be available during your build and at runtime.">
+                          <i class="pficon pficon-help"></i>
+                        </a>
+                      </span></h3>
+                      <osc-key-values
+                        entries="buildConfig.envVars"
+                        delimiter="="
+                        key-validator="env"
+                        delete-policy="added"
+                        key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
+                    </wz-step>
+
+                    <!-- /build config -->
+
+                    <wz-step wz-title="Deployment" canexit="validate">
+                      <h2>Deployment Configuration</h2>
+                      <div class="help-block">
+                        Deployment configurations describe how your application is
+                        configured by the cluster and what conditions trigger a deployment.
+                      </div>
+
+                      <h3>Autodeploy when</h3>
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="deploymentConfig.deployOnNewImage">
+                          New image is available
+                        </label>
+                      </div>
+                      <div class="checkbox">
+                      <label>
+                        <input type="checkbox" ng-model="deploymentConfig.deployOnConfigChange">
+                        Deployment configuration changes
+                      </label>
+                      </div>
+                      <h3>Scaling</h3>
+                      <div class="help-block">
+                        Scaling defines the number of running instances of your built image.
+                      </div>
+                      <div class="form-group">
+                        <label for="scale-type">Scaling Strategy</label>
+                        <select ng-model="scaling.autoscale"
+                                ng-options="option.value as option.label for option in scaling.autoscaleOptions"
+                                id="scale-type"
+                                class="form-control"
+                                aria-describedby="scale-type-help">
+                        </select>
+                        <div class="help-block" id="scale-type-help">
+                          Scale replicas manually or automatically based on CPU usage.
+                        </div>
+                        <div class="learn-more-block">
+                          <a href="{{'pod_autoscaling' | helpLink}}" target="_blank">Learn more <i class="fa fa-external-link" aria-hidden> </i></a>
+                        </div>
+                        <div class="has-warning" ng-if="metricsWarning && scaling.autoscale">
+                          <span class="help-block">
+                            CPU metrics might not be available. In order to use horizontal pod autoscalers,
+                            your cluster administrator must have properly configured cluster metrics.
+                          </span>
+                        </div>
+                      </div>
+                      <div class="form-group" ng-if="!scaling.autoscale">
+                        <label class="number">Replicas</label>
+                        <input type="number"
+                               class="form-control"
+                               min="0"
+                               name="replicas"
+                               ng-model="scaling.replicas"
+                               ng-required="!scaling.autoscale"
+                               ng-disabled="scaling.autoscale"
+                               ng-pattern="/^\d+$/"
+                               aria-describedby="replicas-help">
+                        <div id="replicas-help">
+                          <span class="help-block">The number of instances of your image.</span>
+                        </div>
+                        <div class="has-error" ng-show="form.replicas.$dirty && form.replicas.$invalid">
+                          <span class="help-block">Replicas must be an integer value greater than or equal to 0.</span>
+                        </div>
+                      </div>
+
+                      <osc-autoscaling
+                          ng-if="scaling.autoscale"
+                          model="scaling"
+                          project="project">
+                      </osc-autoscaling>
+
+                      <div class="has-warning" ng-if="showCPURequestWarning">
+                        <span class="help-block">
+                          You should configure <a href="" ng-click="goToStep('Limits')">resource limits</a> for autoscaling.
+                          Autoscaling will not work without a CPU
+                          <span ng-if="'cpu' | isRequestCalculated : project">limit.</span>
+                          <span ng-if="!('cpu' | isRequestCalculated : project)">request.</span>
+                          <span ng-if="'cpu' | isLimitCalculated : project">
+                            The CPU limit will be automatically calculated from the container memory limit.
+                          </span>
                         </span>
-                        <button type="submit"
-                                ng-if="onLastStep()"
-                                class="btn btn-primary">
-                          Create
-                        </button>
-                        <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
                       </div>
-                    </fieldset>
-                  </div>
-                </div>
-              </div>
+                      <h3>Environment Variables (Runtime only) <span class="help action-inline">
+                        <a href data-toggle="tooltip"
+                           data-original-title="Environment variables are used to configure and pass information to running containers.  These environment variables will only be available at runtime.">
+                          <i class="pficon pficon-help"></i>
+                        </a>
+                      </span></h3>
+                      <osc-key-values
+                        entries="deploymentConfig.envVars"
+                        delimiter="="
+                        key-validator="env"
+                        delete-policy="added"
+                        key-validation-tooltip="A valid environment variable name is an alphanumeric (a-z and 0-9) string beginning with a letter that may contain underscores."></osc-key-values>
+                    </wz-step>
+
+                    <!-- /deployment config -->
+
+                    <!-- Only show routing options if the image has exposed ports. -->
+                    <wz-step wz-title="Routing" wz-disabled="!routing.portOptions.length">
+                      <h2>Routing</h2>
+                      <div class="help-block">
+                        Routing is a way to make your application publicly visible. Otherwise
+                        you may only be able to access your application by its IP address, if
+                        allowed by the system administrator.
+                      </div>
+                      <div class="form-group checkbox">
+                        <label>
+                          <input type="checkbox" ng-model="routing.include">
+                          Create a route to the application
+                        </label>
+                      </div>
+                      <osc-routing
+                        model="routing"
+                        routing-disabled="!routing.include">
+                      </osc-routing>
+                    </wz-step>
+
+                    <!-- /routing -->
+
+                    <wz-step wz-title="Limits" canexit="validate">
+                      <h2>Resource Limits</h2>
+                      <div class="help-block">
+                        Resource limits control compute resource usage by a container on a node.
+                      </div>
+                      <edit-request-limit
+                          resources="container.resources"
+                          type="cpu"
+                          limit-ranges="limitRanges"
+                          request-calculated="cpuRequestCalculated"
+                          limit-calculated="cpuLimitCalculated">
+                      </edit-request-limit>
+                      <edit-request-limit
+                          resources="container.resources"
+                          type="memory"
+                          limit-ranges="limitRanges"
+                          request-calculated="memoryRequestCalculated">
+                      </edit-request-limit>
+                      <div ng-repeat="problem in cpuProblems" class="has-error">
+                        <span class="help-block">{{problem}}</span>
+                      </div>
+                      <div ng-repeat="problem in memoryProblems" class="has-error">
+                        <span class="help-block">{{problem}}</span>
+                      </div>
+                    </wz-step>
+
+                    <!-- /limits -->
+
+                    <wz-step wz-title="Labels" canexit="validate">
+                      <h2>Labels</h2>
+                      <div class="help-block mar-bottom-lg">
+                        Labels are used to organize, group, or select objects and resources,
+                        such as pods. Each label is applied to each resource created.
+                      </div>
+                      <label-editor
+                          labels="labels"
+                          expand="true"
+                          can-toggle="false"
+                          help-text="Each label is applied to each created resource.">
+                      </label-editor>
+                    </wz-step>
+
+                    <wz-step wz-title="Review" class="review-step">
+                      <h2>Review and Create</h2>
+                      <div class="help-block mar-bottom-lg">
+                        Review the options you've selected and click create when ready.
+                      </div>
+
+                      <h3>
+                        Source
+                        <div class="edit-action"><a href="" ng-click="goToStep('Source')">Edit</a></div>
+                      </h3>
+                      <dl class="dl-horizontal left">
+                        <dt>Name:<dt>
+                        <!-- FIXME!! -->
+                        <dd>{{form.appname.$modelValue}}</dd>
+                        <dt>Git Repository URL:<dt>
+                        <dd class="truncate">{{buildConfig.sourceUrl}}</dd>
+                        <dt ng-if-start="buildConfig.gitRef">Git Reference:</dt>
+                        <dd ng-if-end>{{buildConfig.gitRef}}</dd>
+                        <dt ng-if-start="buildConfig.contextDir">Context Dir:</dt>
+                        <dd ng-if-end>{{buildConfig.contextDir}}</dd>
+                      </dl>
+
+                      <h3>
+                        Build Configuration
+                        <div class="edit-action"><a href="" ng-click="goToStep('Build')">Edit</a></div>
+                      </h3>
+                      <dl class="dl-horizontal left">
+                        <dt>Webhook Trigger:<dt>
+                        <dd>{{buildConfig.buildOnSourceChange | yesNo}}</dd>
+                        <dt>Image Change Trigger:<dt>
+                        <dd>{{buildConfig.buildOnImageChange | yesNo}}</dd>
+                        <dt>Config Change Trigger:<dt>
+                        <dd>{{buildConfig.buildOnConfigChange | yesNo}}</dd>
+                      </dl>
+
+                      <h4>Environment Variables</h4>
+                      <div ng-if="(buildConfig.envVars | hashSize) === 0">
+                        <em>None</em>
+                      </div>
+                      <dl class="dl-horizontal left" ng-if="(buildConfig.envVars | hashSize) > 0">
+                        <dt ng-repeat-start="(name, value) in buildConfig.envVars">
+                          {{name}}
+                        </dt>
+                        <dd ng-repeat-end class="truncate" title="{{value}}">
+                          {{value}}
+                        </dd>
+                      </dl>
+
+                      <h3>
+                        Deployment Configuration
+                        <div class="edit-action"><a href="" ng-click="goToStep('Deployment')">Edit</a></div>
+                      </h3>
+                      <dl class="dl-horizontal left">
+                        <dt>Image Trigger:<dt>
+                        <dd>{{deploymentConfig.deployOnNewImage | yesNo}}</dd>
+                        <dt>Config Change Trigger:<dt>
+                        <dd>{{deploymentConfig.deployOnConfigChange | yesNo}}</dd>
+
+                        <dt ng-if-start="!scaling.autoscale">Replicas:</dt>
+                        <dd ng-if-end>{{scaling.replicas}}</dd>
+
+                        <dt ng-if-start="scaling.autoscale">Min Pods:</dt>
+                        <dd>{{scaling.minReplicas}}</dd>
+                        <dt>Max Pods:</dt>
+                        <dd>{{scaling.maxReplicas}}</dd>
+                        <dt>Target CPU:</dt>
+                        <!-- TODO: Handle request/limit ratios. -->
+                        <dd ng-if-end>{{scaling.targetCPU}}</dd>
+                      </dl>
+
+                      <h4>Environment Variables</h4>
+                      <div ng-if="(deploymentConfig.envVars | hashSize) === 0">
+                        <em>None</em>
+                      </div>
+                      <dl class="dl-horizontal left" ng-if="(deploymentConfig.envVars | hashSize) > 0">
+                        <dt ng-repeat-start="(name, value) in deploymentConfig.envVars">
+                          {{name}}
+                        </dt>
+                        <dd ng-repeat-end class="truncate" title="{{value}}">
+                          {{value}}
+                        </dd>
+                      </dl>
+
+                      <div ng-if="routing.portOptions.length">
+                        <h3>
+                          Routing
+                          <div class="edit-action"><a href="" ng-click="goToStep('Routing')">Edit</a></div>
+                        </h3>
+                        <dl class="dl-horizontal left">
+                          <dt>Create Route:<dt>
+                          <dd>{{routing.include | yesNo}}</dd>
+                          <dt ng-if-start="routing.host">Hostname:<dt>
+                          <dd ng-if-end>{{routing.host}}</dd>
+                          <dt ng-if-start="routing.path">Path:<dt>
+                          <dd ng-if-end>{{routing.path}}</dd>
+                          <dt>Target Port:</dt>
+                          <dd>{{routing.targetPort}}</dd>
+                          <dt ng-if-start="routing.tls.termination">Termination:</dt>
+                          <dd ng-if-end>{{routing.tls.termination}}</dd>
+                          <dt ng-if-start="routing.tls.insecureEdgeTerminationPolicy">Insecure Traffic:</dt>
+                          <dd ng-if-end>{{routing.tls.insecureEdgeTerminationPolicy}}</dd>
+                          <dt ng-if-start="routing.tls.certificate">Certifcate:</dt>
+                          <dd ng-if-end class="truncate">{{routing.tls.certificate}}</dd>
+                          <dt ng-if-start="routing.tls.key">Private Key:</dt>
+                          <dd ng-if-end class="truncate">{{routing.tls.key}}</dd>
+                          <dt ng-if-start="routing.tls.caCertificate">CA Certificate:</dt>
+                          <dd ng-if-end class="truncate">{{routing.tls.caCertificate}}</dd>
+                          <dt ng-if-start="routing.tls.destinationCACertificate">Destination CA Certificate:</dt>
+                          <dd ng-if-end class="truncate">{{routing.tls.destinationCACertificate}}</dd>
+                        </dl>
+                      </div>
+
+                      <h3>
+                        Resource Limits
+                        <div class="edit-action"><a href="" ng-click="goToStep('Limits')">Edit</a></div>
+                      </h3>
+                      <div ng-if="!hasLimits()">
+                        <em>None</em>
+                      </div>
+                      <div ng-if="hasLimits()">
+                        <dl class="dl-horizontal left">
+                          <dt ng-if-start="container.resources.requests.cpu">CPU Request:</dt>
+                          <dd ng-if-end>{{container.resources.requests.cpu | usageWithUnits: 'cpu'}}</dd>
+                          <dt ng-if-start="container.resources.limits.cpu">CPU Limit:</dt>
+                          <dd ng-if-end>{{container.resources.limits.cpu | usageWithUnits: 'cpu'}}</dd>
+                          <dt ng-if-start="container.resources.requests.memory">Memory Request:</dt>
+                          <dd ng-if-end>{{container.resources.requests.memory | usageWithUnits: 'memory'}}</dd>
+                          <dt ng-if-start="container.resources.limits.memory">Memory Limit:</dt>
+                          <dd ng-if-end>{{container.resources.limits.memory | usageWithUnits: 'memory'}}</dd>
+                        </dl>
+                      </div>
+
+                      <h3>
+                        Labels
+                        <div class="edit-action"><a href="" ng-click="goToStep('Labels')">Edit</a></div>
+                      </h3>
+                      <div ng-if="(labels | hashSize) === 0">
+                        <em>None</em>
+                      </div>
+                      <dl class="dl-horizontal left" ng-if="(labels | hashSize) > 0">
+                        <dt ng-repeat-start="(name, value) in labels">
+                          {{name}}
+                        </dt>
+                        <dd ng-repeat-end class="truncate" title="{{value}}">
+                          {{value}}
+                        </dd>
+                      </dl>
+
+                    </wz-step>
+
+                    <div ng-hide="imageStream">
+                      {{ emptyMessage }}
+                    </div>
+                  </wizard>
+                </form>
+              </fieldset>
             </div>
-        </div><!-- /middle-bottom -->
+          </div>
+        </div>
+        <div class="wizard-bottom surface-shaded">
+          <div class="wizard-buttons">
+            <fieldset ng-disabled="!validate()">
+              <div class="create-cancel-btns">
+                <span ng-if="!onLastStep()">
+                  <button ng-click="goToStep('Review')"
+                          class="btn btn-primary">
+                    Review
+                  </button>
+                </span>
+                <button type="submit"
+                        ng-if="onLastStep()"
+                        class="btn btn-primary">
+                  Create
+                </button>
+                <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
+              </div>
+            </fieldset>
+          </div>
+        </div><!-- /wizard-bottom -->
       </div><!-- /middle-container -->
     </div><!-- /middle-section -->
   </div><!-- /middle -->

@@ -43,15 +43,19 @@ angular.module("openshiftConsole")
 
     $scope.onLastStep = function() {
       var wizard = WizardHandler.wizard();
-      return wizard.currentStepNumber() === wizard.totalStepCount();
-    };
-
-    $scope.previousEnabled = function() {
-      return WizardHandler.wizard().currentStepNumber() !== 1;
+      return wizard && wizard.currentStepNumber() === wizard.totalStepCount();
     };
 
     $scope.goToStep = function(name) {
       WizardHandler.wizard().goTo(name);
+    };
+
+    $scope.next = function() {
+      WizardHandler.wizard().next();
+    };
+
+    $scope.previous = function() {
+      WizardHandler.wizard().previous();
     };
 
     $scope.validate = function() {

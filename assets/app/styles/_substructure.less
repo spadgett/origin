@@ -76,16 +76,6 @@ html,body {
           position: relative;
           width: 100%;
         }
-        &.middle-bottom-fixed {
-          .container {
-            padding-bottom: 0;
-          }
-        }
-        .middle-bottom {
-          .flex(@columns: 1 1 0%);
-          position: relative;
-          width: 100%;
-        }
       }
     }
   }
@@ -150,20 +140,6 @@ html,body {
       // make scrollable
       overflow-x: hidden;
       overflow-y: auto;
-      .middle-section .middle-container {
-        &.middle-bottom-fixed {
-          .container {
-            padding-bottom: @middle-bottom-md * 1.25; // height offset of fixed middle-bottom by variable size * 1.25 to ensure enough scrollable area available
-          }
-          .middle-bottom {
-            bottom: 0;
-            height: @middle-bottom-md;
-            position: fixed;
-            width: 100%;
-            z-index: 2;
-          }
-        }
-      }
     }
     .sidebar-right {
       border-left: 1px solid #dadada;
