@@ -6,7 +6,7 @@
   <div class="middle">
     <!-- Middle section -->
     <div class="middle-section surface-shaded">
-      <div id="scrollable-content" class="middle-container has-scroll">
+      <div id="scrollable-content" class="middle-container has-scroll middle-bottom-fixed">
         <div class="middle-content">
           <div class="container surface-shaded">
             <breadcrumbs breadcrumbs="breadcrumbs"></breadcrumbs>
@@ -465,34 +465,6 @@
 
                           </wz-step>
 
-                          <div class="wizard-buttons">
-                            <fieldset ng-disabled="!validate()">
-                              <div class="pull-right" ng-if="!onLastStep()">
-                                <button wz-previous ng-show="previousEnabled()" class="btn btn-default">
-                                  <i class="fa fa-angle-left" aria-hidden="true"></i>
-                                  Previous
-                                </button>
-                                <button wz-next class="btn btn-default mar-left-sm">
-                                  Next
-                                  <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                </button>
-                              </div>
-                              <span ng-if="!onLastStep()">
-                                <button ng-click="goToStep('Review')"
-                                        class="btn btn-primary">
-                                  Review and Create
-                                </button>
-                              </span>
-                              <button type="submit"
-                                      ng-if="onLastStep()"
-                                      class="btn btn-primary">
-                                Create
-                              </button>
-                              <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
-                            </fieldset>
-                          </div>
-                        </wizard>
-                        </form>
                         <div ng-hide="imageStream">
                           {{ emptyMessage }}
                         </div>
@@ -503,7 +475,45 @@
               </div><!-- /col-* -->
             </div><!-- /row -->
           </div><!-- /container -->
+        </wizard>
+        </form>
         </div><!-- /middle-content -->
+        <div class="middle-bottom wizard-bottom surface-shaded">
+            <div class="container surface-shaded">
+              <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                  <div class="wizard-buttons">
+                    <fieldset ng-disabled="!validate()">
+                      <div class="previous-next-btns" ng-if="!onLastStep()">
+                        <button wz-previous ng-show="previousEnabled()" class="btn btn-default">
+                          <i class="fa fa-angle-left" aria-hidden="true"></i>
+                          Previous
+                        </button>
+                        <button wz-next class="btn btn-default mar-left-sm">
+                          Next
+                          <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div class="create-cancel-btns">
+                        <span ng-if="!onLastStep()">
+                          <button ng-click="goToStep('Review')"
+                                  class="btn btn-primary">
+                            Review and Create
+                          </button>
+                        </span>
+                        <button type="submit"
+                                ng-if="onLastStep()"
+                                class="btn btn-primary">
+                          Create
+                        </button>
+                        <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div><!-- /middle-bottom -->
       </div><!-- /middle-container -->
     </div><!-- /middle-section -->
   </div><!-- /middle -->
