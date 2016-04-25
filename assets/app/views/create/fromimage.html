@@ -8,12 +8,14 @@
     <div class="middle-section surface-shaded">
       <div id="scrollable-content" class="middle-container has-scroll">
         <div class="middle-content">
-          <div class="container-fluid surface-shaded">
+          <div class="container surface-shaded">
             <breadcrumbs breadcrumbs="breadcrumbs"></breadcrumbs>
+            <div class="row">
+              <div class="col-sm-12">
             <div class="osc-form">
               <fieldset ng-disabled="disableInputs">
                 <form class="" ng-show="imageStream" novalidate name="form" ng-submit="createApp()">
-                  <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html" class="wizard">
+                  <wizard on-finish="createApp()" edit-mode="true" template="views/create/wizard.html">
                     <wz-step wz-title="Source" canexit="validate">
                       <osc-image-summary resource="image" name="imageName"></osc-image-summary>
                       <div class="clearfix visible-xs-block"></div>
@@ -33,7 +35,7 @@
                                 minlength="2"
                                 maxlength="24"
                                 pattern="[a-z]([-a-z0-9]*[a-z0-9])?"
-                                ng-model="name"
+                                ng-model="app.name"
                                 id="appname"
                                 name="appname"
                                 ng-change="nameTaken = false"
@@ -292,6 +294,7 @@
                         </label>
                       </div>
                       <osc-routing
+                        ng-if="routing"
                         model="routing"
                         routing-disabled="!routing.include">
                       </osc-routing>
@@ -353,8 +356,7 @@
                       </h3>
                       <dl class="dl-horizontal left">
                         <dt>Name:<dt>
-                        <!-- FIXME!! -->
-                        <dd>{{form.appname.$modelValue}}</dd>
+                        <dd>{{app.name}}</dd>
                         <dt>Git Repository URL:<dt>
                         <dd class="truncate">{{buildConfig.sourceUrl}}</dd>
                         <dt ng-if-start="buildConfig.gitRef">Git Reference:</dt>
@@ -498,10 +500,14 @@
                 </form>
               </fieldset>
             </div>
+        </div><!-- /middle-bottom -->
+            </div>
           </div>
         </div>
         <div class="wizard-bottom surface-shaded">
-          <div class="wizard-buttons">
+          <div class="container">
+          <div class="wizard-buttons row">
+            <div class="col-sm-8">
             <fieldset ng-disabled="!validate()">
               <div class="create-cancel-btns">
                 <span ng-if="!onLastStep()">
@@ -510,7 +516,7 @@
                     Review
                   </button>
                 </span>
-                <button type="submit"
+                <button ng-click="createApp()"
                         ng-if="onLastStep()"
                         class="btn btn-primary">
                   Create
@@ -518,6 +524,8 @@
                 <a ng-href="{{projectName | projectOverviewURL}}" class="mar-left-md">Cancel</a>
               </div>
             </fieldset>
+            </div>
+          </div>
           </div>
         </div><!-- /wizard-bottom -->
       </div><!-- /middle-container -->

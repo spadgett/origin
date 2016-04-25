@@ -84,6 +84,7 @@ angular.module("openshiftConsole")
           scope.imageName = imageName;
           scope.imageTag = $routeParams.imageTag;
           scope.namespace = $routeParams.namespace;
+          scope.app = {};
           scope.buildConfig = {
             buildOnSourceChange: true,
             buildOnImageChange: true,
@@ -329,10 +330,11 @@ angular.module("openshiftConsole")
 
         $scope.createApp = function(){
           $scope.disableInputs = true;
+          $scope.name = $scope.app.name;
           var resourceMap = ApplicationGenerator.generate($scope);
           //init tasks
           var resources = [];
-          angular.forEach(resourceMap, function(value, key){
+          angular.forEach(resourceMap, function(value) {
             if(value !== null){
               Logger.debug("Generated resource definition:", value);
               resources.push(value);
