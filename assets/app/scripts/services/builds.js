@@ -129,5 +129,21 @@ angular.module("openshiftConsole")
       return true;
     };
 
+    var isRecentBuild = $filter('isRecentBuild'),
+        isOscActiveObject = $filter('isOscActiveObject'),
+        imageObjectRef = $filter('imageObjectRef');
+    BuildsService.prototype.recentByOutputImage = function(builds) {
+      var recentBuildsByOutputImage = {}, buildOutputImage;
+      _.each(builds, function(build) {
+        if (isRecentBuild(build) || isOscActiveObject(build)) {
+          buildOutputImage = imageObjectRef(build.spec.output.to, build.metadata.namespace);
+          recentBuildsByOutputImage[buildOutputImage] = recentBuildsByOutputImage[buildOutputImage] || [];
+          recentBuildsByOutputImage[buildOutputImage].push(build);
+        }
+      });
+
+      return recentBuildsByOutputImage;
+    };
+
     return new BuildsService();
   });

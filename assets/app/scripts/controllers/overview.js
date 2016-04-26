@@ -11,6 +11,7 @@ angular.module('openshiftConsole')
   .controller('OverviewController',
               function ($routeParams,
                         $scope,
+                        BuildsService,
                         DataService,
                         DeploymentsService,
                         ProjectsService,
@@ -478,15 +479,7 @@ angular.module('openshiftConsole')
         }));
 
         function updateRecentBuildsByOutputImage() {
-          $scope.recentBuildsByOutputImage = {};
-          angular.forEach($scope.builds, function(build) {
-            // pre-filter the list to save us some time on each digest loop later
-            if ($filter('isRecentBuild')(build) || $filter('isOscActiveObject')(build)) {
-              var buildOutputImage = imageObjectRefFilter(build.spec.output.to, build.metadata.namespace);
-              $scope.recentBuildsByOutputImage[buildOutputImage] = $scope.recentBuildsByOutputImage[buildOutputImage] || [];
-              $scope.recentBuildsByOutputImage[buildOutputImage].push(build);
-            }
-          });
+          $scope.recentBuildsByOutputImage = BuildsService.recentByOutputImage($scope.builds);
         }
 
         // Sets up subscription for builds, associates builds to triggers on deploymentConfigs

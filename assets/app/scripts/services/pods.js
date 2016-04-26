@@ -44,6 +44,21 @@ angular.module("openshiftConsole")
         debugPod.spec.containers = [container];
 
         return debugPod;
+      },
+
+      groupByDeployment: function(pods, deployments) {
+        var podsByDeployment = {};
+        _.each(pods, function(pod) {
+          var deployment = _.find(deployments, function(deployment) {
+            var deploymentSelector = new LabelSelector(deployment.spec.selector);
+            return deploymentSelector.matches(pod);
+          });
+
+          var deploymentName = _.get(deployment, 'metadata.name', '');
+          _.set(podsByDeployment, [deploymentName, pod.metadata.name], pod);
+        });
+
+        return podsByDeployment;
       }
     };
   });

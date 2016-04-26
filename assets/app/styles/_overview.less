@@ -1,0 +1,72 @@
+.overview {
+  .app-group {
+    border-left: 1px solid #ccc;
+    > .well {
+      border-left: none;
+    }
+  }
+  a.collapsable {
+    color: inherit;
+    &:hover {
+      color: inherit;
+    }
+  }
+  .collapsing .connector {
+    display: none;
+  }
+  // FIXME: duplicate code from _components.less
+  .connector {
+    display: inline-block;
+    position: absolute;
+    left: 22px;
+    margin-top: 3px;
+    i {
+      color: #ccc;
+      .rotate(137deg);
+      font-size: 9px;
+      position: absolute;
+    }
+    &:before {
+      content: '\f111';
+      font: normal normal normal 6px/1 FontAwesome;
+      display: inline-block;
+      color: #fff;
+      position: absolute;
+      left: 2px;
+      top:1px;
+    }
+  }
+  .panel {
+    .mar-bottom-lg();
+    .panel-heading {
+      background-image: none;
+      .panel-title {
+        font-size: @font-size-base;
+        font-weight: 500;
+      }
+    }
+  }
+  .panel-heading {
+    padding: 5px 10px;
+  }
+  .well {
+    margin-bottom: 12px;
+    padding: 3px 10px;
+  }
+  .collapse-target {
+    cursor: pointer;
+  }
+  .collapse-service.panel {
+    border-bottom: none;
+  }
+  .component-label {
+    .text-muted();
+    font-size: @component-label;
+    padding: 0 10px 4px 0;
+    text-transform: uppercase;
+  }
+  .pod-template-block {
+    justify-content: center;
+    margin-left: 10px;
+  }
+}

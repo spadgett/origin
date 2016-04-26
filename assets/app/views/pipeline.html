@@ -1,0 +1,98 @@
+<project-header class="top-header"></project-header>
+<project-page class="project-overview-page">
+
+  <!-- Middle section -->
+  <div class="middle-section">
+    <div class="middle-container">
+      <div class="middle-content has-scroll overview">
+        <div class="container-fluid">
+          <tasks></tasks>
+          <alerts alerts="alerts"></alerts>
+          <div class="row">
+            <div class="col-md-12 gutter-top">
+              <div ng-if="!(servicesByApp | hashSize)" class="empty-project text-center">
+                <h2>Insert Amazing Pipeline Visualization Here</h2>
+                <p class="gutter-top">
+                  There will be some great stuff here.
+                </p>
+                <p class="gutter-top">
+                  <a ng-href="project/{{projectName}}/create" class="btn btn-lg btn-primary">
+                    Add to Project
+                  </a>
+                </p>
+              </div>
+              <div ng-repeat="(app, services) in servicesByApp | orderBy" class="app-group">
+                <div ng-show="app" class="well well-sm collapse-target" ng-click="collapseApp = !collapseApp">
+                  <i ng-if="!collapseApp" class="fa fa-angle-down fa-fw" aria-hidden="true"></i>
+                  <i ng-if="collapseApp" class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
+                  <small class="pull-right text-muted">app={{app}}</small>
+                  {{app || 'No Application'}}
+                </div>
+
+                <div uib-collapse="collapseApp">
+                  <div ng-repeat="service in services"
+                       ng-init="serviceName = service.metadata.name"
+                       class="panel panel-default mar-left-sm"
+                       ng-class="{ 'collapse-service': collapseService }">
+                    <div class="panel-heading collapse-target" ng-click="collapseService = !collapseService">
+                      <div class="connector" aria-hidden="true">
+                        <i class="fa fa-search"></i>
+                      </div>
+                      <div ng-if="route = routesByService[serviceName][0]">
+                        <small class="pull-right text-muted text-uppercase">{{serviceName}}</small>
+                        <h4 class="panel-title">
+                          <i ng-if="!collapseService" class="fa fa-angle-down fa-fw" aria-hidden="true"></i>
+                          <i ng-if="collapseService" class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
+                          <!-- Stop event propagation to avoid collapsing the section when clicking the link. -->
+                          <a ng-if="route | isWebRoute"
+                             ng-href="{{route | routeWebURL}}"
+                             ng-click="$event.stopPropagation()">{{route | routeLabel}}</a>
+                          <span ng-if="!(route | isWebRoute)">{{route | routeLabel}}</span>
+                        </h4>
+                      </div>
+                      <div ng-if="!route">
+                        <h4 class="panel-title">
+                          <i ng-if="!collapseService" class="fa fa-angle-down fa-fw" aria-hidden="true"></i>
+                          <i ng-if="collapseService" class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
+                          {{serviceName}}
+                        </h4>
+                      </div>
+                    </div>
+                    <div uib-collapse="collapseService" class="panel-body">
+                      <!-- FIXME: ng-if is not exactly right, need to understand how to show dep status -->
+                      <div ng-repeat="deployment in deploymentsByService[serviceName]"
+                           ng-if="deployment.status.replicas"
+                           ng-init="dcName = (deployment | annotation : 'deploymentConfig')">
+                        <div ng-if="deploymentConfigs[dcName]" class="component-label">
+                          Deployment {{deploymentConfigs[dcName].metadata.name}}, #{{deployment | annotation: 'deploymentVersion'}}
+                        </div>
+
+                        <div ng-if="!deploymentConfigs[dcName]" class="component-label">
+                          Replication Controller {{deployment.metadata.name}}
+                        </div>
+
+                        <div row mobile="column">
+                          <div column>
+                            <pod-status-chart pods="podsByDeployment[deployment.metadata.name]"></pod-status-chart>
+                          </div>
+
+                          <div column grow="2" class="pod-template-block">
+                            <pod-template
+                              pod-template="deployment.spec.template"
+                              images-by-docker-reference="imagesByDockerReference"
+                              builds="builds">
+                            </pod-template>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- /col-* -->
+          </div>
+        </div>
+      </div><!-- /middle-content -->
+    </div><!-- /middle-container -->
+  </div><!-- /middle-section -->
+</project-page>

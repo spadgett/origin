@@ -61,6 +61,15 @@ angular
     tab.icon = "dashboard";
     tabs.push(tab);
 
+    tab = builder.create()
+     .id(builder.join(pluginName, "pipelines"))
+     .title(function () { return "Pipeline"; })
+     .template(template)
+     .href(projectHref("overview/pipeline"))
+     .page(function () { return builder.join(templatePath, 'pipeline.html'); })
+     .build();
+    tab.icon = "code-fork";
+    tabs.push(tab);
 
     tab = builder.create()
       .id(builder.join(pluginName, "browse"))
@@ -110,6 +119,10 @@ angular
       .when('/project/:project/overview', {
         templateUrl: 'views/project.html',
         controller: 'OverviewController'
+      })
+      .when('/project/:project/overview/pipeline', {
+        templateUrl: 'views/pipeline.html',
+        controller: 'PipelineController'
       })
       .when('/project/:project/settings', {
         templateUrl: 'views/settings.html',
