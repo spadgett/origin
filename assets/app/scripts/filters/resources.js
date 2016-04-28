@@ -31,7 +31,9 @@ angular.module('openshiftConsole')
         "displayName":              ["openshift.io/display-name"],
         "description":              ["openshift.io/description"],
         "buildNumber":              ["openshift.io/build.number"],
-        "buildPod":                 ["openshift.io/build.pod-name"]
+        "buildPod":                 ["openshift.io/build.pod-name"],
+        "jenkinsLog":               ["openshift.io/jenkins-status-json"],
+        "jenkinsStatus":            ["openshift.io/jenkins-log-url"]
       };
       return annotationMap[annotationKey] || null;
     };
@@ -810,6 +812,11 @@ angular.module('openshiftConsole')
         default:
           return null;
       }
+    };
+  })
+  .filter('jenkinsLog', function(annotationFilter) {
+    return function(build) {
+      return annotationFilter(build, 'jenkinsLog');
     };
   })
   .filter('humanizeKind', function (startCaseFilter) {

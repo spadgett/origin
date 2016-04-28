@@ -5,10 +5,12 @@
       border-left: none;
     }
   }
-  a.collapsable {
-    color: inherit;
-    &:hover {
-      color: inherit;
+  .app-header {
+    background-color: white;
+    border: 1px solid #dddddd;
+    margin-bottom: 10px;
+    h2 {
+      margin: 10px;
     }
   }
   .collapsing .connector {
@@ -19,7 +21,7 @@
     display: inline-block;
     position: absolute;
     left: 22px;
-    margin-top: 3px;
+    margin-top: 10px;
     i {
       color: #ccc;
       .rotate(137deg);
@@ -41,13 +43,15 @@
     .panel-heading {
       background-image: none;
       .panel-title {
-        font-size: @font-size-base;
+        font-size: 14px;
         font-weight: 500;
+        margin: 5px;
       }
     }
   }
   .panel-heading {
-    padding: 5px 10px;
+    background-color: white;
+    border-bottom-color: #ededed;
   }
   .well {
     margin-bottom: 12px;

@@ -4,7 +4,7 @@
   <!-- Middle section -->
   <div class="middle-section">
     <div class="middle-container">
-      <div class="middle-content has-scroll overview">
+      <div class="middle-content surface-shaded has-scroll overview">
         <div class="container-fluid">
           <tasks></tasks>
           <alerts alerts="alerts"></alerts>
@@ -22,11 +22,12 @@
                 </p>
               </div>
               <div ng-repeat="(app, services) in servicesByApp | orderBy" class="app-group">
-                <div ng-show="app" class="well well-sm collapse-target" ng-click="collapseApp = !collapseApp">
-                  <i ng-if="!collapseApp" class="fa fa-angle-down fa-fw" aria-hidden="true"></i>
-                  <i ng-if="collapseApp" class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
-                  <small class="pull-right text-muted">app={{app}}</small>
-                  {{app || 'No Application'}}
+                <div ng-show="app" class="app-header collapse-target" ng-click="collapseApp = !collapseApp">
+		  <h2>
+		    <i ng-if="!collapseApp" class="fa fa-angle-down fa-fw" aria-hidden="true"></i>
+		    <i ng-if="collapseApp" class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
+		    Application {{app}}
+		  </h2>
                 </div>
 
                 <div uib-collapse="collapseApp">
@@ -39,7 +40,7 @@
                         <i class="fa fa-search"></i>
                       </div>
                       <div ng-if="route = routesByService[serviceName][0]">
-                        <small class="pull-right text-muted text-uppercase">{{serviceName}}</small>
+                        <small class="pull-right text-muted text-uppercase">Service {{serviceName}}</small>
                         <h4 class="panel-title">
                           <i ng-if="!collapseService" class="fa fa-angle-down fa-fw" aria-hidden="true"></i>
                           <i ng-if="collapseService" class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
@@ -59,7 +60,7 @@
                       </div>
                     </div>
                     <div uib-collapse="collapseService" class="panel-body">
-                      <!-- FIXME: ng-if is not exactly right, need to understand how to show dep status -->
+                      <!-- FIXME: ng-if is not exactly right, need to understand how to show deployment status -->
                       <div ng-repeat="deployment in deploymentsByService[serviceName]"
                            ng-if="deployment.status.replicas"
                            ng-init="dcName = (deployment | annotation : 'deploymentConfig')">
@@ -84,6 +85,12 @@
                             </pod-template>
                           </div>
                         </div>
+
+			<div ng-repeat="build in recentBuildsForDC[dcName] track by (build | uid)"
+                             class="animate-repeat">
+			  <div class="component-label" ng-if="$first">Pipeline</div>
+			  <build-pipeline build="build"></build-pipeline>
+			</div>
                       </div>
                     </div>
                   </div>

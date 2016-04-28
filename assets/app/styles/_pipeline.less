@@ -1,0 +1,50 @@
+@build-pipeline-border-color: #d1d1d1;
+
+.build-pipeline {
+  .build-summary, .stage {
+    .text-center();
+    min-width: 175px;
+  }
+  .build-summary, .stages-block {
+    border: 1px solid @build-pipeline-border-color;
+  }
+  .build-summary {
+    border-right-width: 0;
+    padding: 10px;
+  }
+  .pipeline-label {
+    font-size: @component-label;
+    margin: 0;
+    padding: 2px 5px;
+    text-transform: uppercase;
+    &.Pending {
+      background-color: #d1d1d1;
+    }
+    &.Running {
+      background-color: #0088ce;
+      color: white;
+    }
+    &.Complete {
+      background-color: #3f9c35;
+      color: white;
+    }
+    &.Failed, &.Error {
+      background-color: #cc0000;
+      color: white;
+    }
+  }
+  .stages {
+    flex-wrap: wrap;
+  }
+  .stage {
+    font-size: @component-label;
+    margin: 10px 0;
+    padding: 0 10px;
+    .stage-duration {
+      .text-muted();
+    }
+  }
+  .stage + .stage {
+    border-left: 1px solid @build-pipeline-border-color;
+  }
+}

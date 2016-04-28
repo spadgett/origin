@@ -9,7 +9,8 @@
  */
 angular.module('openshiftConsole')
   .controller('PipelineController',
-              function ($interval,
+              function ($filter,
+                        $interval,
                         $routeParams,
                         $scope,
                         ApplicationService,
@@ -42,10 +43,35 @@ angular.module('openshiftConsole')
       }
     };
 
+    var imageObjectRef = $filter('imageObjectRef');
     var updateRecentBuildsByOutputImage = function() {
-      if (builds) {
-        $scope.recentBuildsByOutputImage = BuildsService.recentByOutputImage(builds);
+      if (!builds) {
+        return;
       }
+
+      $scope.recentBuildsByOutputImage = BuildsService.recentByOutputImage(builds);
+
+      // Find the builds for each deployment config.
+      $scope.recentBuildsForDC = {};
+      _.each($scope.deploymentConfigs, function(dc, name) {
+        var triggers = _.get(dc, 'spec.triggers', []);
+        triggers = _.filter(triggers, function(trigger) {
+          return _.get(trigger, 'imageChangeParams.from.kind') === 'ImageStreamTag';
+        });
+
+        var images = _.map(triggers, function(trigger) {
+          return _.get(trigger, 'imageChangeParams.from');
+        });
+
+        _.each(images, function(image) {
+          var outputImage = imageObjectRef(image, $scope.projectName);
+          var recentBuildsForImage = $scope.recentBuildsByOutputImage[outputImage];
+          if (!_.isEmpty(recentBuildsForImage)) {
+            $scope.recentBuildsForDC[name] =
+              _.get($scope, ['recentBuildsForDC', name], []).concat(recentBuildsForImage);
+          }
+        });
+      });
     };
 
     ProjectsService
@@ -101,6 +127,7 @@ angular.module('openshiftConsole')
         // Sets up subscription for deploymentConfigs, associates builds to triggers on deploymentConfigs
         watches.push(DataService.watch("deploymentconfigs", context, function(deploymentConfigs) {
           $scope.deploymentConfigs = deploymentConfigs.by("metadata.name");
+          updateRecentBuildsByOutputImage();
           Logger.log("deploymentconfigs (subscribe)", $scope.deploymentConfigs);
         }));
 
