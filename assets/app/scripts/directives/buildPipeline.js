@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module('openshiftConsole')
-  .directive('buildPipeline', function(Logger) {
+  .directive('buildPipeline', function(/* Logger */) {
     return {
       restrict: 'E',
       scope: {
@@ -19,7 +19,7 @@ angular.module('openshiftConsole')
         //   }
         // });
 
-	// test data
+	// TODO: remove before merging! -- test data
 	$scope.jenkinsStatus = {
 	  "_links": {
 	    "self": {

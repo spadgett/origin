@@ -86,10 +86,14 @@
                           </div>
                         </div>
 
-			<div ng-repeat="build in recentBuildsForDC[dcName] track by (build | uid)"
-                             class="animate-repeat">
+                        <!-- Show recent build pipelines. -->
+			<div ng-if="(recentBuildsForDC[dcName] | hashSize) > 0">
 			  <div class="component-label" ng-if="$first">Pipeline</div>
-			  <build-pipeline build="build"></build-pipeline>
+                          <div ng-repeat="build in recentBuildsForDC[dcName] track by (build | uid)"
+                               class="animate-repeat">
+                            <div class="component-label" ng-if="$first">Pipeline</div>
+                            <build-pipeline build="build"></build-pipeline>
+                          </div>
 			</div>
                       </div>
                     </div>
