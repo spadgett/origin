@@ -59,43 +59,67 @@
                         </h4>
                       </div>
                     </div>
-                    <div uib-collapse="collapseService" class="panel-body">
-                      <!-- FIXME: ng-if is not exactly right, need to understand how to show deployment status -->
-                      <div ng-repeat="deployment in deploymentsByService[serviceName]"
-                           ng-if="deployment.status.replicas"
-                           ng-init="dcName = (deployment | annotation : 'deploymentConfig')">
-                        <div ng-if="deploymentConfigs[dcName]" class="component-label">
-                          Deployment {{deploymentConfigs[dcName].metadata.name}}, #{{deployment | annotation: 'deploymentVersion'}}
-                        </div>
-
-                        <div ng-if="!deploymentConfigs[dcName]" class="component-label">
-                          Replication Controller {{deployment.metadata.name}}
-                        </div>
-
-                        <div row mobile="column">
-                          <div column>
-                            <pod-status-chart pods="podsByDeployment[deployment.metadata.name]"></pod-status-chart>
+                    <div uib-collapse="collapseService">
+                      <div class="panel-body">
+                        <!-- FIXME: ng-if is not exactly right, need to understand how to show deployment status -->
+                        <div ng-repeat="deployment in deploymentsByService[serviceName]"
+                            ng-if="deployment.status.replicas"
+                            ng-init="dcName = (deployment | annotation : 'deploymentConfig')">
+                          <div ng-if="deploymentConfigs[dcName]" class="component-label">
+                            Deployment {{deploymentConfigs[dcName].metadata.name}}, #{{deployment | annotation: 'deploymentVersion'}}
                           </div>
 
-                          <div column grow="2" class="pod-template-block">
-                            <pod-template
-                              pod-template="deployment.spec.template"
-                              images-by-docker-reference="imagesByDockerReference"
-                              builds="builds">
-                            </pod-template>
+                          <div ng-if="!deploymentConfigs[dcName]" class="component-label">
+                            Replication Controller {{deployment.metadata.name}}
                           </div>
+
+                          <div row mobile="column">
+                            <div column>
+                              <pod-status-chart pods="podsByDeployment[deployment.metadata.name]"></pod-status-chart>
+                            </div>
+
+                            <div column grow="2" class="pod-template-block">
+                              <pod-template
+                                pod-template="deployment.spec.template"
+                                images-by-docker-reference="imagesByDockerReference"
+                                builds="builds">
+                              </pod-template>
+                            </div>
+                          </div>
+
+                          <!-- Show recent build pipelines. -->
+        <div ng-if="(recentBuildsForDC[dcName] | hashSize) > 0">
+          <div class="component-label" ng-if="$first">Pipeline</div>
+                            <div ng-repeat="build in recentBuildsForDC[dcName] track by (build | uid)"
+                                class="animate-repeat">
+                              <div class="component-label" ng-if="$first">Pipeline</div>
+                              <build-pipeline build="build"></build-pipeline>
+                            </div>
+        </div>
                         </div>
 
-                        <!-- Show recent build pipelines. -->
-			<div ng-if="(recentBuildsForDC[dcName] | hashSize) > 0">
-			  <div class="component-label" ng-if="$first">Pipeline</div>
-                          <div ng-repeat="build in recentBuildsForDC[dcName] track by (build | uid)"
-                               class="animate-repeat">
-                            <div class="component-label" ng-if="$first">Pipeline</div>
-                            <build-pipeline build="build"></build-pipeline>
-                          </div>
-			</div>
                       </div>
+
+                      <div class="panel-body" style="border-top: 1px solid #ededed;">
+                        <!-- BUILDS section -->
+                        <div>
+                          <div row mobile="column">
+                            <span>STAGE</span>
+                          </div>
+                        </div>
+                        <!-- /BUILDS section -->
+                      </div>
+
+                      <div class="panel-body" style="border-top: 1px solid #ededed;">
+                        <!-- BUILDS section -->
+                        <div>
+                          <div row mobile="column">
+                            <span>BUILD</span>
+                          </div>
+                        </div>
+                        <!-- /BUILDS section -->
+                      </div>
+
                     </div>
                   </div>
                 </div>
