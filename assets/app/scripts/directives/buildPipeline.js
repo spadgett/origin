@@ -5,7 +5,8 @@ angular.module('openshiftConsole')
     return {
       restrict: 'E',
       scope: {
-        build: '='
+        build: '=',
+        showConfigName: '='
       },
       templateUrl: 'views/directives/build-pipeline.html',
       link: function($scope) {

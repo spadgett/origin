@@ -40,6 +40,7 @@ angular.module('openshiftConsole')
   })
   .filter('labelName', function() {
     var labelMap = {
+      'buildConfig' : ["openshift.io/build-config.name"],
       'deploymentConfig' : ["openshift.io/deployment-config.name"]
     };
     return function(labelKey) {
@@ -166,6 +167,12 @@ angular.module('openshiftConsole')
         return resource.metadata.labels[key];
       }
       return null;
+    };
+  })
+  .filter('buildConfigForBuild', function(labelNameFilter, labelFilter) {
+    var labelName = labelNameFilter('buildConfig');
+    return function(build) {
+      return labelFilter(build, labelName);
     };
   })
   .filter('icon', function(annotationFilter) {
