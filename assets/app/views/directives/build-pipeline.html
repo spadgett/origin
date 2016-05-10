@@ -6,13 +6,25 @@
     <div>
       <a ng-href="{{build | navigateResourceURL}}">Build #{{build | annotation : 'buildNumber'}}</a>
     </div>
-    <div>
-     <status-icon status="build.status.phase"></status-icon>
+    <div class="status-icon" ng-class="build.status.phase">
+      <span ng-switch="build.status.phase" class="hide-ng-leave">
+        <span ng-switch-when="Complete" class="inverse fa-stack" aria-hidden="true">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-check fa-stack-1x fa-inverse"></i>
+        </span>
+        <span ng-switch-when="Failed" class="inverse fa-stack" aria-hidden="true">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-times fa-stack-1x fa-inverse"></i>
+        </span>
+        <span ng-switch-default>
+          <status-icon status="build.status.phase"></status-icon>
+        </span>
+      </span>
     </div>
     <div class="small text-muted">
       Started <relative-timestamp timestamp="build.metadata.creationTimestamp"></relative-timestamp>
     </div>
-    <div ng-if="build | buildLogURL"><a ng-href="{{build | buildLogURL}}">Log</a></div>
+    <div ng-if="build | buildLogURL" class="small"><a ng-href="{{build | buildLogURL}}">View Log</a></div>
     <!-- spacer -->
     <div flex></div>
   </div>

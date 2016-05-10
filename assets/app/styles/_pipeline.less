@@ -22,7 +22,20 @@
     @media (min-width: 480px) {
       border-right-width: 0;
     }
+    min-height: 100px;
     padding: 10px;
+    .status-icon {
+      margin-bottom: 5px;
+      .inverse {
+        font-size: 8px;
+      }
+      &.Complete .inverse {
+        color: @build-pipeline-success-color;
+      }
+      &.Failed .inverse {
+        color: @build-pipeline-failed-color;
+      }
+    }
   }
   .pipeline-status {
     display: block;
