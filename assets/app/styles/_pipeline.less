@@ -26,30 +26,38 @@
   }
   .pipeline-status {
     display: block;
-    // border-bottom is the horizontal line behind the icon
-    border-bottom: 2px solid #72767b;
-    line-height: 0.1em;
-    margin: 15px auto;
-    max-width: 300px;
-    &.ABORTED {
-      border-color: @build-pipeline-aborted-color;
+    margin: 3px 0;
+    overflow: hidden;
+    text-align: center;
+    &:before,
+    &:after {
+      background-color: #8b8d8f;
+      content: "";
+      display: inline-block;
+      height: 2px;
+      position: relative;
+      vertical-align: middle;
+      width: 50%;
     }
-    &.FAILED {
-      border-color: @build-pipeline-failed-color;
+    &:before {
+      right: 0.5em;
+      margin-left: -50%;
     }
-    &.IN_PROGRESS {
-      border-color: @build-pipeline-in-progress-color;
+    &:after {
+      left: 0.5em;
+      margin-right: -50%;
     }
-    &.SUCCESS {
-      border-color: @build-pipeline-success-color;
+    &.ABORTED:before, &.ABORTED:after {
+      background-color: @build-pipeline-aborted-color;
     }
-    span {
-      background: #ffffff;
-      padding: 0 7px;
-      .fa {
-        font-size: 13px;
-        line-height: 0.1em;
-      }
+    &.FAILED:before, &.FAILED:after {
+      background-color: @build-pipeline-failed-color;
+    }
+    &.IN_PROGRESS:before, &.IN_PROGRESS:after {
+      background-color: @build-pipeline-in-progress-color;
+    }
+    &.SUCCESS:before, &.SUCCESS:after {
+      background-color: @build-pipeline-success-color;
     }
   }
 
