@@ -68,7 +68,9 @@ angular.module('openshiftConsole')
 	      },
 	      "id": "10",
 	      "name": "Deploy",
-	      "status": "PAUSED_PENDING_INPUT",
+	      // "status": "PAUSED_PENDING_INPUT",
+	      // "status": "ABORTED",
+	      "status": "IN_PROGRESS",
 	      "startTimeMillis": 1413461285992,
 	      "durationMillis": 7
 	    }
