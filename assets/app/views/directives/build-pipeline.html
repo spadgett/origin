@@ -1,0 +1,31 @@
+<div row mobile="column" class="build-pipeline">
+  <div column grow="1" class="build-summary">
+    <!-- spacer -->
+    <div flex></div>
+
+    <div>
+      <a ng-href="{{build | navigateResourceURL}}">Build #{{build | annotation : 'buildNumber'}}</a>
+    </div>
+    <div>
+     <status-icon status="build.status.phase"></status-icon>
+    </div>
+    <div class="small text-muted">
+      Started <relative-timestamp timestamp="build.metadata.creationTimestamp"></relative-timestamp>
+    </div>
+    <div ng-if="build | buildLogURL"><a ng-href="{{build | buildLogURL}}">Log</a></div>
+    <!-- spacer -->
+    <div flex></div>
+  </div>
+  <div column grow="4" class="stages-block">
+    <div row class="pipeline-label" ng-class="build.status.phase">
+      {{build.status.phase}}
+    </div>
+    <div row class="stages">
+      <div column grow="1" ng-repeat="stage in jenkinsStatus.stages" class="stage" ng-class="status-{{stage.status}}">
+        <div class="stage-name">{{stage.name}}</div>
+        <pipeline-status ng-if="stage.status" status="stage.status"></pipeline-status>
+        <div ng-if="stage.durationMillis" class="stage-duration">{{stage.durationMillis | humanizeDurationValue}}</div>
+      </div>
+    </div>
+  </div>
+</div>
