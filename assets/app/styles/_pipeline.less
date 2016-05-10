@@ -25,9 +25,10 @@
     min-height: 100px;
     padding: 10px;
     .status-icon {
-      margin-bottom: 5px;
+      margin-bottom: 3px;
       .inverse {
         font-size: 8px;
+        margin-bottom: 3px;
       }
       &.Complete .inverse {
         color: @build-pipeline-success-color;
@@ -79,6 +80,16 @@
         background-color: @build-pipeline-in-progress-color;
       }
     }
+    &.NOT_EXECUTED {
+      &:before {
+        right: -0.5em;
+        background-color: #d1d1d1;
+      }
+      &:after {
+        left: -0.5em;
+        background-color: #d1d1d1;
+      }
+    }
     &.SUCCESS {
       color: @build-pipeline-success-color;
       font-size: 8px;
@@ -94,7 +105,6 @@
       }
     }
   }
-
 
   .pipeline-label {
     font-size: @component-label;

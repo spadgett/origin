@@ -37,6 +37,7 @@
         <div class="stage-name">{{stage.name}}</div>
         <pipeline-status ng-if="stage.status" status="stage.status"></pipeline-status>
         <div ng-if="stage.durationMillis" class="stage-duration">{{stage.durationMillis | humanizeDurationValue}}</div>
+        <div ng-if="!stage.durationMillis" class="stage-duration">not started</div>
       </div>
     </div>
   </div>
