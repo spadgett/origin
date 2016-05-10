@@ -1,24 +1,26 @@
-<span ng-switch="status" class="hide-ng-leave">
-  <!-- See https://github.com/jenkinsci/pipeline-stage-view-plugin/blob/master/rest-api/src/main/java/com/cloudbees/workflow/rest/external/StatusExt.java -->
-  <span ng-switch-when="ABORTED">
-    <i class="fa fa-ban text-muted" aria-hidden="true"></i>
-    Aborted
-  </span>
-  <span ng-switch-when="FAILED">
-    <i class="fa fa-times text-danger" aria-hidden="true"></i>
-    Failed
-  </span>
-  <span ng-switch-when="IN_PROGRESS">
-    <i class="fa fa-refresh fa-spin" aria-hidden="true"></i>
-    In Progress
-  </span>
-  <span ng-switch-when="NOT_EXECUTED"></span>
-  <span ng-switch-when="PAUSED_PENDING_INPUT" aria-hidden="true">
-    <i class="fa fa-pause" aria-hidden="true"></i>
-    Paused (Pending Input)
-  </span>
-  <span ng-switch-when="SUCCESS">
-    <i class="fa fa-check text-success" aria-hidden="true"></i>
-    Success
+<span class="pipeline-status" ng-class="status">
+  <span ng-switch="status" class="hide-ng-leave">
+    <!-- See https://github.com/jenkinsci/pipeline-stage-view-plugin/blob/master/rest-api/src/main/java/com/cloudbees/workflow/rest/external/StatusExt.java -->
+    <span ng-switch-when="ABORTED" title="Aborted">
+      <i class="fa fa-ban text-muted" aria-hidden="true"></i>
+      <span class="sr-only">Aborted</span>
+    </span>
+    <span ng-switch-when="FAILED" title="Failed">
+      <i class="fa fa-times text-danger" aria-hidden="true"></i>
+      <span class="sr-only">Failed</span>
+    </span>
+    <span ng-switch-when="IN_PROGRESS" title="In Progress">
+      <i class="fa fa-refresh fa-spin" aria-hidden="true"></i>
+      <span class="sr-only">In Progress</span>
+    </span>
+    <span ng-switch-when="NOT_EXECUTED" title="Not Executed"></span>
+    <span ng-switch-when="PAUSED_PENDING_INPUT" title="Paused (Pending Input)">
+      <i class="fa fa-pause" aria-hidden="true"></i>
+      <span class="sr-only">Paused Pending Input</span>
+    </span>
+    <span ng-switch-when="SUCCESS" title="Success">
+      <i class="fa fa-check text-success" aria-hidden="true"></i>
+      <span class="sr-only">Success</span>
+    </span>
   </span>
 </span>
