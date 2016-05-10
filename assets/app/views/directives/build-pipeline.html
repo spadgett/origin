@@ -20,7 +20,7 @@
     <div row class="pipeline-label" ng-class="build.status.phase">
       {{build.status.phase}}
     </div>
-    <div row class="stages">
+    <div row mobile="column" class="stages">
       <div column grow="1" ng-repeat="stage in jenkinsStatus.stages" class="stage">
         <div class="stage-name">{{stage.name}}</div>
         <pipeline-status ng-if="stage.status" status="stage.status"></pipeline-status>

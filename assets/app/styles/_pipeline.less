@@ -7,6 +7,10 @@
 @build-pipeline-success-color: #3f9c35;
 
 .build-pipeline {
+  margin-bottom: 15px;
+  @media (min-width: 480px) {
+    margin-bottom: 0;
+  }
   .build-summary, .stage {
     .text-center();
     min-width: 150px;
@@ -15,7 +19,9 @@
     border: 1px solid @build-pipeline-border-color;
   }
   .build-summary {
-    border-right-width: 0;
+    @media (min-width: 480px) {
+      border-right-width: 0;
+    }
     padding: 10px;
   }
   .pipeline-status {
@@ -91,6 +97,12 @@
     }
   }
   .stage + .stage {
-    border-left: 1px solid @build-pipeline-border-color;
+    border-top: 1px solid @build-pipeline-border-color;
+    padding-top: 10px;
+    @media (min-width: 480px) {
+      border-top: none;
+      border-left: 1px solid @build-pipeline-border-color;
+      padding-top: 0;
+    }
   }
 }
