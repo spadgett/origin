@@ -34,6 +34,9 @@
       {{build.status.phase}}
     </div>
     <div row mobile="column" class="stages">
+      <div column grow="1" ng-if="!jenkinsStatus.stages || jenkinsStatus.stages.length === 0" class="stage">
+        <div grow="1" class="stage-name">Build has no Jenkins stages</div>
+      </div>
       <div column grow="1" ng-repeat="stage in jenkinsStatus.stages" class="stage">
         <div class="stage-name">{{stage.name}}</div>
         <pipeline-status ng-if="stage.status" status="stage.status"></pipeline-status>
