@@ -13616,7 +13616,8 @@ objects:
   - apiGroups:
     - servicecatalog.k8s.io
     resources:
-    - serviceclasses
+    - clusterserviceclasses
+    - clusterserviceplans
     verbs:
     - list
     - watch
@@ -13720,19 +13721,20 @@ objects:
   - apiGroups:
     - servicecatalog.k8s.io
     resources:
-    - servicebrokers/status
+    - clusterservicebrokers/status
     - serviceinstances/status
-    - serviceinstancecredentials/status
-    - serviceinstancecredentials/finalizers
+    - serviceinstances/reference
+    - servicebindings/status
+    - servicebindings/finalizers
     - serviceinstances/reference
     verbs:
     - update
   - apiGroups:
     - servicecatalog.k8s.io
     resources:
-    - servicebrokers
+    - clusterservicebrokers
     - serviceinstances
-    - serviceinstancecredentials
+    - servicebindings
     verbs:
     - list
     - get
@@ -13747,8 +13749,8 @@ objects:
   - apiGroups:
     - servicecatalog.k8s.io
     resources:
-    - serviceclasses
-    - serviceplans
+    - clusterserviceclasses
+    - clusterserviceplans
     verbs:
     - create
     - delete
@@ -13872,10 +13874,10 @@ objects:
         serviceAccountName: service-catalog-apiserver
         containers:
         - command: 
-          - apiserver
+          - /opt/services/apiserver
           args:
           - --admission-control
-          - KubernetesNamespaceLifecycle,DefaultServicePlan,ServiceInstanceCredentialsLifecycle,ServicePlanChangeValidator,BrokerAuthSarCheck
+          - KubernetesNamespaceLifecycle,DefaultServicePlan,ServiceBindingsLifecycle,ServicePlanChangeValidator,BrokerAuthSarCheck
           - --storage-type
           - etcd
           - --secure-port
@@ -13888,8 +13890,8 @@ objects:
           - ${CORS_ALLOWED_ORIGIN}
           - --feature-gates
           - OriginatingIdentity=true
-          image: ${SERVICE_CATALOG_IMAGE}
-          imagePullPolicy: IfNotPresent
+          image: quay.io/kubernetes-service-catalog/apiserver:canary
+          imagePullPolicy: Always
           name: apiserver
           ports:
           - containerPort: 6443
@@ -13970,7 +13972,7 @@ objects:
         serviceAccountName: service-catalog-controller
         containers:
         - command: 
-          - controller-manager
+          - /opt/services/controller-manager
           args:
           - -v
           - "5"
@@ -13980,8 +13982,8 @@ objects:
           - "5m"
           - --feature-gates
           - OriginatingIdentity=true
-          image: ${SERVICE_CATALOG_IMAGE}
-          imagePullPolicy: IfNotPresent
+          image: quay.io/kubernetes-service-catalog/controller-manager:canary
+          imagePullPolicy: Always
           name: controller-manager
           ports:
           - containerPort: 8080
@@ -14068,7 +14070,7 @@ parameters:
 objects:
 # register the tsb with the service catalog
 - apiVersion: servicecatalog.k8s.io/v1alpha1
-  kind: ServiceBroker
+  kind: ClusterServiceBroker
   metadata:
     name: template-service-broker
   spec:
