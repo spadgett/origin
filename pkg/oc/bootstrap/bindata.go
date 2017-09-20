@@ -13617,6 +13617,7 @@ objects:
     - servicecatalog.k8s.io
     resources:
     - serviceclasses
+    - serviceplans
     verbs:
     - list
     - watch
@@ -13747,6 +13748,7 @@ objects:
     - servicecatalog.k8s.io
     resources:
     - serviceclasses
+    - serviceplans
     verbs:
     - create
     - delete
@@ -13870,7 +13872,7 @@ objects:
         serviceAccountName: service-catalog-apiserver
         containers:
         - command: 
-          - apiserver
+          - /opt/services/apiserver
           args:
           - --admission-control
           - KubernetesNamespaceLifecycle,DefaultServicePlan,ServiceInstanceCredentialsLifecycle,ServicePlanChangeValidator,BrokerAuthSarCheck
@@ -13886,8 +13888,8 @@ objects:
           - ${CORS_ALLOWED_ORIGIN}
           - --feature-gates
           - OriginatingIdentity=true
-          image: ${SERVICE_CATALOG_IMAGE}
-          imagePullPolicy: IfNotPresent
+          image: quay.io/kubernetes-service-catalog/apiserver:canary
+          imagePullPolicy: Always
           name: apiserver
           ports:
           - containerPort: 6443
@@ -13968,7 +13970,7 @@ objects:
         serviceAccountName: service-catalog-controller
         containers:
         - command: 
-          - controller-manager
+          - /opt/services/controller-manager
           args:
           - -v
           - "5"
@@ -13978,8 +13980,8 @@ objects:
           - "5m"
           - --feature-gates
           - OriginatingIdentity=true
-          image: ${SERVICE_CATALOG_IMAGE}
-          imagePullPolicy: IfNotPresent
+          image: quay.io/kubernetes-service-catalog/controller-manager:canary
+          imagePullPolicy: Always
           name: controller-manager
           ports:
           - containerPort: 8080
