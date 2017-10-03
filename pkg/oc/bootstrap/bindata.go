@@ -13723,6 +13723,7 @@ objects:
     resources:
     - servicebrokers/status
     - serviceinstances/status
+    - serviceinstances/reference
     - serviceinstancecredentials/status
     - serviceinstancecredentials/finalizers
     verbs:
