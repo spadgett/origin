@@ -285,7 +285,7 @@ objects:
           - ${CORS_ALLOWED_ORIGIN}
           - --feature-gates
           - OriginatingIdentity=true
-          image: quay.io/kubernetes-service-catalog/apiserver:canary
+          image: quay.io/kubernetes-service-catalog/apiserver:v0.0.23
           imagePullPolicy: Always
           name: apiserver
           ports:
@@ -377,7 +377,7 @@ objects:
           - "5m"
           - --feature-gates
           - OriginatingIdentity=true
-          image: quay.io/kubernetes-service-catalog/controller-manager:canary
+          image: quay.io/kubernetes-service-catalog/controller-manager:v0.0.23
           imagePullPolicy: Always
           name: controller-manager
           ports:
