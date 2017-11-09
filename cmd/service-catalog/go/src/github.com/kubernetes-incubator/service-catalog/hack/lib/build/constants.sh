@@ -33,6 +33,7 @@ readonly OS_CROSS_COMPILE_TARGETS=(
   #cmd/openshift
   #cmd/oc
   cmd/service-catalog
+  cmd/origin-web-console
 )
 readonly OS_CROSS_COMPILE_BINARIES=("${OS_CROSS_COMPILE_TARGETS[@]##*/}")
 
