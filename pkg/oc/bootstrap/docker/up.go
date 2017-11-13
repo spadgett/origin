@@ -114,6 +114,11 @@ var (
 		"jenkins pipeline persistent": "examples/jenkins/jenkins-persistent-template.json",
 		"sample pipeline":             "examples/jenkins/pipeline/samplepipeline.yaml",
 	}
+	// consoleTemplateLocations are templates that will be registered in an internal namespace
+	// for the web console
+	consoleTemplateLocations = map[string]string{
+		"web console server template": "install/origin-web-console/apiserver-template.yaml",
+	}
 	// serviceCatalogTemplateLocations are templates that will be registered in an internal namespace
 	// when the service catalog is requested
 	serviceCatalogTemplateLocations = map[string]string{
@@ -135,6 +140,7 @@ var (
 
 	openshiftVersion36 = semver.MustParse("3.6.0")
 	openshiftVersion37 = semver.MustParse("3.7.0")
+	openshiftVersion38 = semver.MustParse("3.8.0")
 )
 
 // NewCmdUp creates a command that starts OpenShift on Docker with reasonable defaults
@@ -410,6 +416,18 @@ func (c *ClientStartConfig) Complete(f *osclientcmd.Factory, cmd *cobra.Command)
 
 	// Import templates
 	c.addTask(conditionalTask("Importing templates", c.ImportTemplates, c.ShouldInitializeData))
+
+	// Import web console templates
+	c.addTask(conditionalTask("Importing web console templates", c.ImportConsoleTemplates, func() bool {
+		serverVersion, _ := c.OpenShiftHelper().ServerVersion()
+		return useWebConsoleTemplate(serverVersion) && c.ShouldInitializeData()
+	}))
+
+	// Install the web console
+	c.addTask(conditionalTask("Installing web console", c.InstallWebConsole, func() bool {
+		serverVersion, _ := c.OpenShiftHelper().ServerVersion()
+		return useWebConsoleTemplate(serverVersion) && c.ShouldInitializeData()
+	}))
 
 	// Import catalog templates
 	c.addTask(conditionalTask("Importing service catalog templates", c.ImportServiceCatalogTemplates, func() bool {
@@ -965,6 +983,33 @@ func (c *ClientStartConfig) InstallRouter(out io.Writer) error {
 	return c.OpenShiftHelper().InstallRouter(kubeClient, f, c.LocalConfigDir, c.imageFormat(), c.ServerIP, c.PortForwarding, out, os.Stderr)
 }
 
+// InstallWebConsole installs the OpenShift web console on the server
+func (c *ClientStartConfig) InstallWebConsole(out io.Writer) error {
+	f, err := c.Factory()
+	if err != nil {
+		return err
+	}
+
+	masterURL := c.OpenShiftHelper().Master(c.ServerIP)
+	if len(c.PublicHostname) > 0 {
+		masterURL = fmt.Sprintf("https://%s:8443", c.PublicHostname)
+	}
+
+	publicURL := fmt.Sprintf("%s/console/", masterURL)
+
+	metricsURL := ""
+	if c.ShouldInstallMetrics {
+		metricsURL = fmt.Sprintf("https://%s/hawkular/metrics", openshift.MetricsHost(c.RoutingSuffix, c.ServerIP))
+	}
+
+	loggingURL := ""
+	if c.ShouldInstallLogging {
+		loggingURL = fmt.Sprintf("https://%s", openshift.LoggingHost(c.RoutingSuffix, c.ServerIP))
+	}
+
+	return c.OpenShiftHelper().InstallWebConsole(f, c.imageFormat(), c.ServerLogLevel, publicURL, masterURL, loggingURL, metricsURL)
+}
+
 // ImportImageStreams imports default image streams into the server
 // TODO: Use streams compiled into oc
 func (c *ClientStartConfig) ImportImageStreams(out io.Writer) error {
@@ -986,6 +1031,14 @@ func (c *ClientStartConfig) ImportTemplates(out io.Writer) error {
 	}
 	if shouldImportAdminTemplates(version) {
 		return c.importObjects(out, "kube-system", adminTemplateLocations)
+	}
+	return nil
+}
+
+// ImportConsoleTemplates imports web console templates into the server
+func (c *ClientStartConfig) ImportConsoleTemplates(out io.Writer) error {
+	if err := c.importObjects(out, openshift.OpenshiftInfraNamespace, consoleTemplateLocations); err != nil {
+		return err
 	}
 	return nil
 }
@@ -1012,6 +1065,12 @@ func shouldImportAdminTemplates(v semver.Version) bool {
 
 func useAnsible(v semver.Version) bool {
 	return v.GTE(openshiftVersion36)
+}
+
+func useWebConsoleTemplate(v semver.Version) bool {
+	// FIXME: always return true for now
+	/* return v.GTE(openshiftVersion38) */
+	return true
 }
 
 // InstallLogging will start the installation of logging components

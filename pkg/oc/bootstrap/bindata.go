@@ -36,6 +36,8 @@
 // examples/prometheus/node-exporter.yaml
 // examples/prometheus/prometheus.yaml
 // examples/service-catalog/service-catalog.yaml
+// install/origin-web-console/apiserver-config.yaml
+// install/origin-web-console/apiserver-template.yaml
 // install/service-catalog-broker-resources/template-service-broker-registration.yaml
 // install/templateservicebroker/apiserver-config.yaml
 // install/templateservicebroker/apiserver-template.yaml
@@ -14258,6 +14260,154 @@ func examplesServiceCatalogServiceCatalogYaml() (*asset, error) {
 	return a, nil
 }
 
+var _installOriginWebConsoleApiserverConfigYaml = []byte(`kind: AssetConfig
+apiVersion: v1
+extensionDevelopment: false
+extensionProperties: null
+extensionScripts: null
+extensionStylesheets: null
+extensions: null
+loggingPublicURL: ""
+logoutURL: ""
+masterPublicURL: https://127.0.0.1:8443
+metricsPublicURL: ""
+publicURL: https://127.0.0.1:8443/console/
+servingInfo:
+  bindAddress: 0.0.0.0:8443
+  bindNetwork: tcp4
+  certFile: /var/serving-cert/tls.crt
+  clientCA: ""
+  keyFile: /var/serving-cert/tls.key
+  maxRequestsInFlight: 0
+  namedCertificates: null
+  requestTimeoutSeconds: 0`)
+
+func installOriginWebConsoleApiserverConfigYamlBytes() ([]byte, error) {
+	return _installOriginWebConsoleApiserverConfigYaml, nil
+}
+
+func installOriginWebConsoleApiserverConfigYaml() (*asset, error) {
+	bytes, err := installOriginWebConsoleApiserverConfigYamlBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "install/origin-web-console/apiserver-config.yaml", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
+var _installOriginWebConsoleApiserverTemplateYaml = []byte(`apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: template-service-broker-webconsole
+parameters:
+- name: IMAGE
+  value: openshift/origin-web-console:latest
+- name: NAMESPACE
+  value: openshift-web-console
+- name: LOGLEVEL
+  value: "0"
+- name: API_SERVER_CONFIG
+- name: NODE_SELECTOR
+  value: "{}"
+objects:
+
+# to create the web console server
+- apiVersion: extensions/v1beta1
+  kind: DaemonSet
+  metadata:
+    namespace: ${NAMESPACE}
+    name: webconsole
+    labels:
+      webconsole: "true"
+  spec:
+    template:
+      metadata:
+        name: webconsole
+        labels:
+          webconsole: "true"
+      spec:
+        serviceAccountName: webconsole
+        containers:
+        - name: c
+          image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
+          command:
+          - "/usr/bin/origin-web-console"
+          - "--audit-log-path=-"
+          - "--config=/var/webconsole-config/webconsole-config.yaml"
+          ports:
+          - containerPort: 8443
+          volumeMounts:
+          - mountPath: /var/serving-cert
+            name: serving-cert
+          - mountPath: /var/webconsole-config
+            name: webconsole-config
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+              scheme: HTTPS
+        nodeSelector: "${{NODE_SELECTOR}}"
+        volumes:
+        - name: serving-cert
+          secret:
+            defaultMode: 420
+            secretName: webconsole-serving-cert
+        - name: webconsole-config
+          configMap:
+            defaultMode: 420
+            name: webconsole-config
+
+# to create the config for the web console
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    namespace: ${NAMESPACE}
+    name: webconsole-config
+  data:
+    webconsole-config.yaml: ${API_SERVER_CONFIG}
+
+# to be able to assign powers to the process
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    namespace: ${NAMESPACE}
+    name: webconsole
+
+# to be able to expose web console inside the cluster
+- apiVersion: v1
+  kind: Service
+  metadata:
+    namespace: ${NAMESPACE}
+    name: webconsole
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: webconsole-serving-cert
+  spec:
+    selector:
+      webconsole: "true"
+    ports:
+    - name: https
+      port: 443
+      targetPort: 8443
+`)
+
+func installOriginWebConsoleApiserverTemplateYamlBytes() ([]byte, error) {
+	return _installOriginWebConsoleApiserverTemplateYaml, nil
+}
+
+func installOriginWebConsoleApiserverTemplateYaml() (*asset, error) {
+	bytes, err := installOriginWebConsoleApiserverTemplateYamlBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{name: "install/origin-web-console/apiserver-template.yaml", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	a := &asset{bytes: bytes, info: info}
+	return a, nil
+}
+
 var _installServiceCatalogBrokerResourcesTemplateServiceBrokerRegistrationYaml = []byte(`apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
@@ -14697,6 +14847,8 @@ var _bindata = map[string]func() (*asset, error){
 	"examples/prometheus/node-exporter.yaml": examplesPrometheusNodeExporterYaml,
 	"examples/prometheus/prometheus.yaml": examplesPrometheusPrometheusYaml,
 	"examples/service-catalog/service-catalog.yaml": examplesServiceCatalogServiceCatalogYaml,
+	"install/origin-web-console/apiserver-config.yaml": installOriginWebConsoleApiserverConfigYaml,
+	"install/origin-web-console/apiserver-template.yaml": installOriginWebConsoleApiserverTemplateYaml,
 	"install/service-catalog-broker-resources/template-service-broker-registration.yaml": installServiceCatalogBrokerResourcesTemplateServiceBrokerRegistrationYaml,
 	"install/templateservicebroker/apiserver-config.yaml": installTemplateservicebrokerApiserverConfigYaml,
 	"install/templateservicebroker/apiserver-template.yaml": installTemplateservicebrokerApiserverTemplateYaml,
@@ -14801,6 +14953,10 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		}},
 	}},
 	"install": &bintree{nil, map[string]*bintree{
+		"origin-web-console": &bintree{nil, map[string]*bintree{
+			"apiserver-config.yaml": &bintree{installOriginWebConsoleApiserverConfigYaml, map[string]*bintree{}},
+			"apiserver-template.yaml": &bintree{installOriginWebConsoleApiserverTemplateYaml, map[string]*bintree{}},
+		}},
 		"service-catalog-broker-resources": &bintree{nil, map[string]*bintree{
 			"template-service-broker-registration.yaml": &bintree{installServiceCatalogBrokerResourcesTemplateServiceBrokerRegistrationYaml, map[string]*bintree{}},
 		}},
