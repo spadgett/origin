@@ -23,7 +23,7 @@ const (
 	// TODO: rename template
 	consoleNamespace             = "openshift-web-console"
 	consoleAPIServerTemplateName = "template-service-broker-webconsole"
-	consoleAssetConfigFile       = "install/origin-web-console/apiserver-config.yaml"
+	consoleAssetConfigFile       = "install/origin-web-console/console-config.yaml"
 )
 
 // InstallWebConsole installs the web console server into the openshift-web-console namespace and waits for it to become ready
@@ -91,7 +91,7 @@ func (h *Helper) InstallWebConsole(f *clientcmd.Factory, imageFormat string, ser
 	// wait for the apiserver endpoint to become available
 	err = wait.Poll(1*time.Second, 10*time.Minute, func() (bool, error) {
 		glog.V(2).Infof("polling for web console server availability")
-		ds, err := kubeClient.Extensions().DaemonSets(consoleNamespace).Get("webconsole", metav1.GetOptions{})
+		ds, err := kubeClient.Extensions().DeploymentsGetter(consoleNamespace).Get("webconsole", metav1.GetOptions{})
 		if err != nil {
 			return false, err
 		}

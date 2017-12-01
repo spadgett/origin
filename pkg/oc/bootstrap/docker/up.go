@@ -117,7 +117,7 @@ var (
 	// consoleTemplateLocations are templates that will be registered in an internal namespace
 	// for the web console
 	consoleTemplateLocations = map[string]string{
-		"web console server template": "install/origin-web-console/apiserver-template.yaml",
+		"web console server template": "install/origin-web-console/console-template.yaml",
 	}
 	// serviceCatalogTemplateLocations are templates that will be registered in an internal namespace
 	// when the service catalog is requested
@@ -1068,9 +1068,7 @@ func useAnsible(v semver.Version) bool {
 }
 
 func useWebConsoleTemplate(v semver.Version) bool {
-	// FIXME: always return true for now
-	/* return v.GTE(openshiftVersion38) */
-	return true
+	return v.GTE(openshiftVersion38)
 }
 
 // InstallLogging will start the installation of logging components

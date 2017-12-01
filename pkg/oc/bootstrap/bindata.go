@@ -36,8 +36,8 @@
 // examples/prometheus/node-exporter.yaml
 // examples/prometheus/prometheus.yaml
 // examples/service-catalog/service-catalog.yaml
-// install/origin-web-console/apiserver-config.yaml
-// install/origin-web-console/apiserver-template.yaml
+// install/origin-web-console/console-config.yaml
+// install/origin-web-console/console-template.yaml
 // install/service-catalog-broker-resources/template-service-broker-registration.yaml
 // install/templateservicebroker/apiserver-config.yaml
 // install/templateservicebroker/apiserver-template.yaml
@@ -14260,7 +14260,7 @@ func examplesServiceCatalogServiceCatalogYaml() (*asset, error) {
 	return a, nil
 }
 
-var _installOriginWebConsoleApiserverConfigYaml = []byte(`kind: AssetConfig
+var _installOriginWebConsoleConsoleConfigYaml = []byte(`kind: AssetConfig
 apiVersion: v1
 extensionDevelopment: false
 extensionProperties: null
@@ -14282,22 +14282,22 @@ servingInfo:
   namedCertificates: null
   requestTimeoutSeconds: 0`)
 
-func installOriginWebConsoleApiserverConfigYamlBytes() ([]byte, error) {
-	return _installOriginWebConsoleApiserverConfigYaml, nil
+func installOriginWebConsoleConsoleConfigYamlBytes() ([]byte, error) {
+	return _installOriginWebConsoleConsoleConfigYaml, nil
 }
 
-func installOriginWebConsoleApiserverConfigYaml() (*asset, error) {
-	bytes, err := installOriginWebConsoleApiserverConfigYamlBytes()
+func installOriginWebConsoleConsoleConfigYaml() (*asset, error) {
+	bytes, err := installOriginWebConsoleConsoleConfigYamlBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "install/origin-web-console/apiserver-config.yaml", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "install/origin-web-console/console-config.yaml", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _installOriginWebConsoleApiserverTemplateYaml = []byte(`apiVersion: template.openshift.io/v1
+var _installOriginWebConsoleConsoleTemplateYaml = []byte(`apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: template-service-broker-webconsole
@@ -14311,17 +14311,23 @@ parameters:
 - name: API_SERVER_CONFIG
 - name: NODE_SELECTOR
   value: "{}"
+- name: REPLICA_COUNT
+  value: "1"
 objects:
 
 # to create the web console server
-- apiVersion: extensions/v1beta1
-  kind: DaemonSet
+- apiVersion: apps/v1beta1
+  kind: Deployment
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole
     labels:
+      app: openshift-web-console
       webconsole: "true"
   spec:
+    replicas: ${{REPLICA_COUNT}}
+    strategy:
+      type: Recreate
     template:
       metadata:
         name: webconsole
@@ -14366,6 +14372,8 @@ objects:
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole-config
+    labels:
+      app: openshift-web-console
   data:
     webconsole-config.yaml: ${API_SERVER_CONFIG}
 
@@ -14375,6 +14383,8 @@ objects:
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole
+    labels:
+      app: openshift-web-console
 
 # to be able to expose web console inside the cluster
 - apiVersion: v1
@@ -14382,6 +14392,8 @@ objects:
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole
+    labels:
+      app: openshift-web-console
     annotations:
       service.alpha.openshift.io/serving-cert-secret-name: webconsole-serving-cert
   spec:
@@ -14393,17 +14405,17 @@ objects:
       targetPort: 8443
 `)
 
-func installOriginWebConsoleApiserverTemplateYamlBytes() ([]byte, error) {
-	return _installOriginWebConsoleApiserverTemplateYaml, nil
+func installOriginWebConsoleConsoleTemplateYamlBytes() ([]byte, error) {
+	return _installOriginWebConsoleConsoleTemplateYaml, nil
 }
 
-func installOriginWebConsoleApiserverTemplateYaml() (*asset, error) {
-	bytes, err := installOriginWebConsoleApiserverTemplateYamlBytes()
+func installOriginWebConsoleConsoleTemplateYaml() (*asset, error) {
+	bytes, err := installOriginWebConsoleConsoleTemplateYamlBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "install/origin-web-console/apiserver-template.yaml", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "install/origin-web-console/console-template.yaml", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -14847,8 +14859,8 @@ var _bindata = map[string]func() (*asset, error){
 	"examples/prometheus/node-exporter.yaml": examplesPrometheusNodeExporterYaml,
 	"examples/prometheus/prometheus.yaml": examplesPrometheusPrometheusYaml,
 	"examples/service-catalog/service-catalog.yaml": examplesServiceCatalogServiceCatalogYaml,
-	"install/origin-web-console/apiserver-config.yaml": installOriginWebConsoleApiserverConfigYaml,
-	"install/origin-web-console/apiserver-template.yaml": installOriginWebConsoleApiserverTemplateYaml,
+	"install/origin-web-console/console-config.yaml": installOriginWebConsoleConsoleConfigYaml,
+	"install/origin-web-console/console-template.yaml": installOriginWebConsoleConsoleTemplateYaml,
 	"install/service-catalog-broker-resources/template-service-broker-registration.yaml": installServiceCatalogBrokerResourcesTemplateServiceBrokerRegistrationYaml,
 	"install/templateservicebroker/apiserver-config.yaml": installTemplateservicebrokerApiserverConfigYaml,
 	"install/templateservicebroker/apiserver-template.yaml": installTemplateservicebrokerApiserverTemplateYaml,
@@ -14954,8 +14966,8 @@ var _bintree = &bintree{nil, map[string]*bintree{
 	}},
 	"install": &bintree{nil, map[string]*bintree{
 		"origin-web-console": &bintree{nil, map[string]*bintree{
-			"apiserver-config.yaml": &bintree{installOriginWebConsoleApiserverConfigYaml, map[string]*bintree{}},
-			"apiserver-template.yaml": &bintree{installOriginWebConsoleApiserverTemplateYaml, map[string]*bintree{}},
+			"console-config.yaml": &bintree{installOriginWebConsoleConsoleConfigYaml, map[string]*bintree{}},
+			"console-template.yaml": &bintree{installOriginWebConsoleConsoleTemplateYaml, map[string]*bintree{}},
 		}},
 		"service-catalog-broker-resources": &bintree{nil, map[string]*bintree{
 			"template-service-broker-registration.yaml": &bintree{installServiceCatalogBrokerResourcesTemplateServiceBrokerRegistrationYaml, map[string]*bintree{}},

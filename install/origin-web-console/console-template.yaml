@@ -12,17 +12,23 @@ parameters:
 - name: API_SERVER_CONFIG
 - name: NODE_SELECTOR
   value: "{}"
+- name: REPLICA_COUNT
+  value: "1"
 objects:
 
 # to create the web console server
-- apiVersion: extensions/v1beta1
-  kind: DaemonSet
+- apiVersion: apps/v1beta1
+  kind: Deployment
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole
     labels:
+      app: openshift-web-console
       webconsole: "true"
   spec:
+    replicas: ${{REPLICA_COUNT}}
+    strategy:
+      type: Recreate
     template:
       metadata:
         name: webconsole
@@ -67,6 +73,8 @@ objects:
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole-config
+    labels:
+      app: openshift-web-console
   data:
     webconsole-config.yaml: ${API_SERVER_CONFIG}
 
@@ -76,6 +84,8 @@ objects:
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole
+    labels:
+      app: openshift-web-console
 
 # to be able to expose web console inside the cluster
 - apiVersion: v1
@@ -83,6 +93,8 @@ objects:
   metadata:
     namespace: ${NAMESPACE}
     name: webconsole
+    labels:
+      app: openshift-web-console
     annotations:
       service.alpha.openshift.io/serving-cert-secret-name: webconsole-serving-cert
   spec:
